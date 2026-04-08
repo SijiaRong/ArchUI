@@ -12,6 +12,7 @@ submodules:
   release-coordination: 6b3d7f1e
   operations: 4d9a2c6f
   test-playbook: ff000001
+  hackathon: aa100001
 layout:
   1a5b9c3d:
     x: "1110.1210876394587"

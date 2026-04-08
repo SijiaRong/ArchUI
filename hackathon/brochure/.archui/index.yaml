@@ -1,0 +1,14 @@
+schema_version: "1"
+uuid: aa10000a
+submodules: {}
+links:
+  - uuid: aa10000c
+    relation: depends-on
+    description: 宣传册的色彩、字体、排版规范由 vi 模块统一定义
+  - uuid: aa10000b
+    relation: depends-on
+    description: 宣传册主视觉图片由 image-design 模块通过 Gemini 生成
+  - uuid: aa100006
+    relation: depends-on
+    description: 宣传册内容来源于 project-packaging 的问题陈述、竞品分析和市场数据
+layout: {}

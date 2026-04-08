@@ -1,0 +1,8 @@
+schema_version: "1"
+uuid: aa100007
+submodules: {}
+links:
+  - uuid: aa100005
+    relation: related-to
+    description: 问题陈述的核心表述需同步至 memory-nodes 的叙事锚点
+layout: {}

@@ -1,0 +1,11 @@
+schema_version: "1"
+uuid: aa100005
+submodules: {}
+links:
+  - uuid: aa100006
+    relation: related-to
+    description: 项目包装的核心论点来源于记忆节点中的洞察和决策
+  - uuid: aa100002
+    relation: related-to
+    description: PPT 叙事结构引用记忆节点中的叙事锚点
+layout: {}

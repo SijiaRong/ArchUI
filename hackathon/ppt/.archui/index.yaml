@@ -1,0 +1,14 @@
+schema_version: "1"
+uuid: aa100002
+submodules: {}
+links:
+  - uuid: aa10000b
+    relation: depends-on
+    description: PPT 主视觉素材由 image-design 模块通过 Gemini 生成
+  - uuid: aa10000a
+    relation: related-to
+    description: PPT 与宣传册共享视觉语言和品牌规范
+  - uuid: aa10000c
+    relation: depends-on
+    description: PPT 的色彩、字体、视觉调性遵循 vi 模块定义的品牌规范
+layout: {}

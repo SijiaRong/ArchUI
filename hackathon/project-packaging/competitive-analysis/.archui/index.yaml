@@ -1,0 +1,8 @@
+schema_version: "1"
+uuid: aa100008
+submodules: {}
+links:
+  - uuid: aa100007
+    relation: depends-on
+    description: 竞品对比以问题陈述为基准，围绕核心痛点展开差异化分析
+layout: {}

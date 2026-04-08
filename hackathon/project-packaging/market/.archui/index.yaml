@@ -1,0 +1,8 @@
+schema_version: "1"
+uuid: aa100009
+submodules: {}
+links:
+  - uuid: aa100008
+    relation: related-to
+    description: 市场分析与竞品对比共同构成项目商业可行性的完整论证
+layout: {}

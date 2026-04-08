@@ -1,0 +1,11 @@
+schema_version: "1"
+uuid: aa100006
+submodules:
+  problem-statement: aa100007
+  competitive-analysis: aa100008
+  market: aa100009
+links:
+  - uuid: aa100005
+    relation: depends-on
+    description: 项目包装的核心论点来源于记忆节点中的洞察和决策
+layout: {}

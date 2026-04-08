@@ -1,0 +1,13 @@
+schema_version: "1"
+uuid: aa100001
+submodules:
+  ppt: aa100002
+  banner: aa100003
+  video: aa100004
+  memory-nodes: aa100005
+  project-packaging: aa100006
+  brochure: aa10000a
+  image-design: aa10000b
+  vi: aa10000c
+links: []
+layout: {}

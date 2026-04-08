@@ -1,0 +1,8 @@
+schema_version: "1"
+uuid: aa10000b
+submodules: {}
+links:
+  - uuid: aa10000c
+    relation: depends-on
+    description: 图片生成的风格约束（色彩、调性、视觉语言）由 vi 模块统一定义
+layout: {}
