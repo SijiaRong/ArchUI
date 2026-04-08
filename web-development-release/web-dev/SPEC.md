@@ -32,19 +32,40 @@ The canvas is built on **React Flow**. Each ArchUI module maps to a custom React
 
 ```
 CanvasPage
-└── ReactFlow (controlled)
-    ├── ModuleNode (custom node)
-    │   ├── NodeHeader (name + description)
-    │   ├── PortSection (submodule port handles)
-    │   ├── NodeActions (edit, drill-in)
-    │   └── CommandBar (see gui/components/module-node/command-bar)
-    └── LinkEdge (custom edge)
-        └── EdgeLabel (relation type)
+├── Topbar (48px — logo, breadcrumb, toolbar buttons, theme toggle)
+├── ReactFlow (controlled, fills remaining height)
+│   ├── ModuleNode (custom node — each child of currentModule)
+│   │   ├── Header (36px: status dot, name, drill-in icon)
+│   │   ├── UUID row
+│   │   ├── Body (52px: description text)
+│   │   └── Port rows (28px each — one per outgoing link; label = target module name)
+│   └── LinkEdge (custom edge — relation-based color, dash, arrowhead, label pill)
+│       └── Only drawn between sibling nodes; cross-level links omitted from canvas
+├── DetailPanel (320px — slides in from right when a card is selected)
+│   ├── Header: module name (port-palette accent), UUID, description
+│   ├── SUBMODULES section (child's own submodules with names)
+│   ├── LINK TO section (all outgoing links — sibling and cross-level)
+│   └── LINKED BY section (sibling modules that link to this one)
+└── StatusBar (36px — idle/selected badge + interaction hints)
 ```
 
-**Drill-down navigation:** clicking a module sets it as the new canvas root. A level title and breadcrumb trail allow navigating back up.
+**Canvas data model:** Each child of `currentModule` renders as one `ModuleNode`. Edges are built from each child's own `links` array but only drawn when the target is also a sibling (another child of `currentModule`). Cross-hierarchy links — where the target is outside the current level — are silently omitted from the React Flow edge list. They remain fully accessible in the detail panel.
 
-**State management:** canvas state lives in a Zustand store. Module data is loaded via `loadProject.ts`, which reads both README.md and `.archui/index.yaml` per module.
+**No external stub cards:** There are no small stub cards for cross-level links. The canvas only shows sibling module cards.
+
+**Port row labels:** Each port row shows the **name** of the target module (resolved from the sibling list; UUID fallback for cross-level links).
+
+**Detail panel:** Appears when a node is single-clicked (selected). Shows the selected module's name, UUID, description, submodule list, outgoing links, and incoming links from siblings. Slides in/out via CSS transform (200ms). Closes when clicking empty canvas space or navigating.
+
+**Detail panel — SUBMODULES row expand behavior:**
+- Rows where the submodule has a `description` show a `›` arrow on the left. Clicking the row toggles expansion: the arrow rotates 90° (pointing down) and the description text is revealed below the row name.
+- Rows where the submodule has no description show no arrow and are non-interactive (no pointer cursor). The row name is indented by the arrow width so all names remain left-aligned across both row types.
+
+**Drill-down navigation:** double-clicking a node navigates into it, making it the new `currentModule`. Selection is cleared on navigation. A breadcrumb trail in the topbar allows navigating back up.
+
+**State management:** canvas state lives in a Zustand store (`store/canvas.ts`). Module data is loaded via `loadProject.ts`, which tries `SPEC.md → HARNESS.md → MEMORY.md → SKILL.md → README.md` for identity documents, and loads one level of grandchildren (for the detail panel submodule list) per level.
+
+**Overlap detection:** on every module load, if the saved layout positions cause any two cards to overlap (AABB check using actual card height = 116 + n_ports × 28 px), the layout is discarded and re-computed, then saved back to `.archui/layout.yaml`.
 
 ## Filesystem Adapters
 
