@@ -19,6 +19,7 @@ export interface Violation {
   ruleId: ValidationCode | string
   filePath: string
   message: string
+  severity?: 'error' | 'warn'
 }
 
 export interface IndexYaml {
