@@ -1,4 +1,5 @@
 import { useCanvasStore } from '../../store/canvas'
+import { workspaceContent } from '../../generated/workspace-content.generated'
 import s from './Breadcrumb.module.css'
 
 export function Breadcrumb() {
@@ -6,7 +7,7 @@ export function Breadcrumb() {
   const navigate = useCanvasStore(s => s.navigate)
 
   return (
-    <nav className={s.nav} aria-label="Breadcrumb">
+    <nav className={s.nav} aria-label={workspaceContent.canvas.breadcrumb.ariaLabel}>
       {breadcrumb.map((crumb, index) => {
         const isLast = index === breadcrumb.length - 1
         return (

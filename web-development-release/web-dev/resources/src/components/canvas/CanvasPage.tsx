@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
 import {
   ReactFlow,
   Background,
@@ -15,6 +16,8 @@ import '@xyflow/react/dist/style.css'
 import { useCanvasStore } from '../../store/canvas'
 import { saveLayout, addLink, createModule } from '../../filesystem/writeOps'
 import type { ArchModule, ModuleLink, ProjectIndexEntry } from '../../types'
+import { workspaceContent } from '../../generated/workspace-content.generated'
+import { workspaceLayout } from '../../generated/workspace-layout.generated'
 import { Breadcrumb } from '../nav/Breadcrumb'
 import { ContextMenu } from '../ui/ContextMenu'
 import type { MenuItem } from '../ui/ContextMenu'
@@ -32,15 +35,6 @@ import s from './CanvasPage.module.css'
 const NODE_TYPES = { moduleNode: ModuleNode, externalStubNode: ExternalStubNode }
 const EDGE_TYPES = { linkEdge: LinkEdge }
 
-const CHILD_GRID_X = 700
-const CHILD_GRID_Y = 120
-const CHILD_GRID_W = 260
-const CHILD_GRID_H = 190
-const EXTERNAL_LEFT_X = 42
-const EXTERNAL_RIGHT_X = 1180
-const EXTERNAL_Y = 120
-const EXTERNAL_GAP = 168
-
 const ACCENT_COUNT = 6
 
 interface CanvasPageProps {
@@ -53,8 +47,8 @@ function placeholderEntry(uuid: string): ProjectIndexEntry {
     uuid,
     path: '',
     parentPath: null,
-    name: 'Unknown module',
-    description: 'This module UUID is not currently resolvable in the project index.',
+    name: workspaceContent.canvas.placeholder.unknownModuleName,
+    description: workspaceContent.canvas.placeholder.unknownModuleDescription,
     submodules: {},
     links: [],
   }
@@ -86,19 +80,21 @@ function realUuid(nodeId: string): string {
 }
 
 function autoChildPosition(index: number, total: number): { x: number; y: number } {
-  const cols = total > 4 ? 2 : 1
+  const childGrid = workspaceLayout.canvas.graph.childGrid
+  const cols = total > childGrid.twoColumnThreshold ? 2 : 1
   const col = index % cols
   const row = Math.floor(index / cols)
   return {
-    x: CHILD_GRID_X + col * CHILD_GRID_W,
-    y: CHILD_GRID_Y + row * CHILD_GRID_H + (col % 2) * 26,
+    x: childGrid.originX + col * childGrid.columnWidth,
+    y: childGrid.originY + row * childGrid.rowHeight + (col % 2) * childGrid.staggerY,
   }
 }
 
 function autoExternalPosition(index: number, side: 'left' | 'right'): { x: number; y: number } {
+  const externalNodes = workspaceLayout.canvas.graph.externalNodes
   return {
-    x: side === 'left' ? EXTERNAL_LEFT_X : EXTERNAL_RIGHT_X,
-    y: EXTERNAL_Y + index * EXTERNAL_GAP,
+    x: side === 'left' ? externalNodes.leftX : externalNodes.rightX,
+    y: externalNodes.startY + index * externalNodes.gapY,
   }
 }
 
@@ -141,7 +137,8 @@ function buildGraph(
       if (!sourceVisible) ensureExternal(source.uuid, 'left', link.relation)
       if (!targetVisible) ensureExternal(link.uuid, 'right', link.relation)
 
-      const edgeKey = `${sourceId}|${targetId}|${link.relation ?? 'related-to'}|${link.description ?? ''}`
+      const edgeRelation = link.relation ?? workspaceContent.linkRenderer.defaultRelation
+      const edgeKey = `${sourceId}|${targetId}|${edgeRelation}|${link.description ?? ''}`
       if (seenEdges.has(edgeKey)) continue
       seenEdges.add(edgeKey)
 
@@ -151,7 +148,7 @@ function buildGraph(
         source: sourceId,
         target: targetId,
         type: 'linkEdge',
-        data: { relation: link.relation },
+        data: { relation: edgeRelation },
         markerEnd: { type: MarkerType.ArrowClosed, color: stroke, width: 14, height: 14 },
         style: { stroke },
       } satisfies Edge)
@@ -172,7 +169,7 @@ function buildGraph(
     {
       id: currentModule.uuid,
       type: 'moduleNode',
-      position: currentModule.layout[currentModule.uuid] ?? { x: 320, y: 230 },
+      position: currentModule.layout[currentModule.uuid] ?? workspaceLayout.canvas.graph.primaryNode,
       draggable: false,
       data: {
         entry: primaryEntry,
@@ -240,13 +237,13 @@ function buildGraph(
 
 export function CanvasPage({ theme, onToggleTheme }: CanvasPageProps) {
   const currentModule = useCanvasStore(s => s.currentModule)
-  const projectIndex  = useCanvasStore(s => s.projectIndex)
-  const adapter       = useCanvasStore(s => s.adapter)
-  const navigate      = useCanvasStore(s => s.navigate)
-  const reload        = useCanvasStore(s => s.reload)
-  const loading       = useCanvasStore(s => s.loading)
-  const error         = useCanvasStore(s => s.error)
-  const setError      = useCanvasStore(s => s.setError)
+  const projectIndex = useCanvasStore(s => s.projectIndex)
+  const adapter = useCanvasStore(s => s.adapter)
+  const navigate = useCanvasStore(s => s.navigate)
+  const reload = useCanvasStore(s => s.reload)
+  const loading = useCanvasStore(s => s.loading)
+  const error = useCanvasStore(s => s.error)
+  const setError = useCanvasStore(s => s.setError)
 
   const [selectedUuid, setSelectedUuid] = useState<string | null>(null)
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
@@ -298,13 +295,28 @@ export function CanvasPage({ theme, onToggleTheme }: CanvasPageProps) {
     const items: MenuItem[] = []
 
     if (entry?.path) {
-      items.push({ id: 'open', label: 'Open module', icon: '>', action: () => { void navigate(entry.path); setSelectedUuid(uuid) } })
+      items.push({
+        id: 'open',
+        label: workspaceContent.canvas.contextMenu.openModule,
+        icon: '>',
+        action: () => { void navigate(entry.path); setSelectedUuid(uuid) },
+      })
     }
 
     if (uuid === currentModule?.uuid) {
       items.push(
-        { id: 'new-child', label: 'New child module', icon: '+', action: () => setShowNewModule(true) },
-        { id: 'reload', label: 'Reload workspace', icon: 'R', action: () => void reload() },
+        {
+          id: 'new-child',
+          label: workspaceContent.canvas.contextMenu.newChildModule,
+          icon: '+',
+          action: () => setShowNewModule(true),
+        },
+        {
+          id: 'reload',
+          label: workspaceContent.canvas.contextMenu.reloadWorkspace,
+          icon: 'R',
+          action: () => void reload(),
+        },
       )
     }
 
@@ -320,7 +332,7 @@ export function CanvasPage({ theme, onToggleTheme }: CanvasPageProps) {
     const sourceEntry = projectIndex[sourceUuid]
     if (!sourceEntry?.path) return
 
-    const link: ModuleLink = { uuid: targetUuid, relation: 'related-to' }
+    const link: ModuleLink = { uuid: targetUuid, relation: workspaceContent.linkRenderer.defaultRelation }
     try {
       await addLink(adapter, sourceEntry.path, link)
       await reload()
@@ -359,11 +371,32 @@ export function CanvasPage({ theme, onToggleTheme }: CanvasPageProps) {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  const canvasContent = workspaceContent.canvas
+  const themeToggleLabel = theme === 'light'
+    ? canvasContent.toolbar.themeToggle.toDark
+    : canvasContent.toolbar.themeToggle.toLight
+
   const commands = useMemo<Command[]>(() => {
     const list: Command[] = [
-      { id: 'new-module', label: 'New child module', icon: '+', action: () => setShowNewModule(true) },
-      { id: 'reload', label: 'Reload workspace', icon: 'R', hint: 'Reload current module', action: () => reload() },
-      { id: 'toggle-theme', label: theme === 'light' ? 'Switch to dark' : 'Switch to light', icon: 'T', action: onToggleTheme },
+      {
+        id: 'new-module',
+        label: canvasContent.commands.newChildModule,
+        icon: '+',
+        action: () => setShowNewModule(true),
+      },
+      {
+        id: 'reload',
+        label: canvasContent.commands.reloadWorkspace,
+        icon: 'R',
+        hint: canvasContent.commands.reloadHint,
+        action: () => reload(),
+      },
+      {
+        id: 'toggle-theme',
+        label: themeToggleLabel,
+        icon: 'T',
+        action: onToggleTheme,
+      },
     ]
 
     if (currentModule?.children) {
@@ -371,7 +404,7 @@ export function CanvasPage({ theme, onToggleTheme }: CanvasPageProps) {
         list.push({
           id: `nav-${child.uuid}`,
           label: child.name,
-          hint: 'Open module',
+          hint: canvasContent.commands.openModuleHint,
           icon: '>',
           action: () => { void navigate(child.path); setSelectedUuid(child.uuid) },
         })
@@ -379,43 +412,73 @@ export function CanvasPage({ theme, onToggleTheme }: CanvasPageProps) {
     }
 
     return list
-  }, [currentModule, navigate, onToggleTheme, reload, theme])
+  }, [canvasContent.commands, currentModule, navigate, onToggleTheme, reload, themeToggleLabel])
 
   const selectedEntry = selectedUuid ? (projectIndex[selectedUuid] ?? placeholderEntry(selectedUuid)) : null
   const selectionAccent = selectedUuid ? accentIndexFromUuid(selectedUuid) : accentIndexFromUuid(currentModule?.uuid ?? '00000000')
   const externalCount = nodes.filter(node => node.type === 'externalStubNode').length
-
-  const workspaceTitle = currentModule?.name ?? 'Open a workspace'
-  const workspaceDescription = currentModule?.description || 'Pick a local ArchUI project to step into the graph.'
+  const workspaceTitle = currentModule?.name ?? canvasContent.intro.emptyTitle
+  const workspaceDescription = currentModule?.description || canvasContent.intro.emptyDescription
+  const canvasLayoutVars = {
+    ['--canvas-intro-top' as string]: `${workspaceLayout.canvas.overlays.intro.desktop.top}px`,
+    ['--canvas-intro-left' as string]: `${workspaceLayout.canvas.overlays.intro.desktop.left}px`,
+    ['--canvas-intro-max-width' as string]: `${workspaceLayout.canvas.overlays.intro.desktop.maxWidth}px`,
+    ['--canvas-intro-tablet-max-width' as string]: `${workspaceLayout.canvas.overlays.intro.tablet.maxWidth}px`,
+    ['--canvas-intro-mobile-top' as string]: `${workspaceLayout.canvas.overlays.intro.mobile.top}px`,
+    ['--canvas-intro-mobile-left' as string]: `${workspaceLayout.canvas.overlays.intro.mobile.left}px`,
+    ['--canvas-intro-mobile-right' as string]: `${workspaceLayout.canvas.overlays.intro.mobile.right}px`,
+    ['--canvas-toolbar-top' as string]: `${workspaceLayout.canvas.overlays.toolbar.desktop.top}px`,
+    ['--canvas-toolbar-right' as string]: `${workspaceLayout.canvas.overlays.toolbar.desktop.right}px`,
+    ['--canvas-toolbar-mobile-top' as string]: `${workspaceLayout.canvas.overlays.toolbar.mobile.top}px`,
+    ['--canvas-toolbar-mobile-left' as string]: `${workspaceLayout.canvas.overlays.toolbar.mobile.left}px`,
+    ['--canvas-toolbar-mobile-right' as string]: `${workspaceLayout.canvas.overlays.toolbar.mobile.right}px`,
+    ['--canvas-meta-top' as string]: `${workspaceLayout.canvas.overlays.workspaceMeta.desktop.top}px`,
+    ['--canvas-meta-left' as string]: `${workspaceLayout.canvas.overlays.workspaceMeta.desktop.left}px`,
+    ['--canvas-meta-tablet-top' as string]: `${workspaceLayout.canvas.overlays.workspaceMeta.tablet.top}px`,
+    ['--canvas-meta-mobile-top' as string]: `${workspaceLayout.canvas.overlays.workspaceMeta.mobile.top}px`,
+    ['--canvas-meta-mobile-left' as string]: `${workspaceLayout.canvas.overlays.workspaceMeta.mobile.left}px`,
+    ['--canvas-selection-hint-right' as string]: `${workspaceLayout.canvas.overlays.selectionHint.desktop.right}px`,
+    ['--canvas-selection-hint-bottom' as string]: `${workspaceLayout.canvas.overlays.selectionHint.desktop.bottom}px`,
+    ['--canvas-selection-hint-mobile-left' as string]: `${workspaceLayout.canvas.overlays.selectionHint.mobile.left}px`,
+    ['--canvas-selection-hint-mobile-right' as string]: `${workspaceLayout.canvas.overlays.selectionHint.mobile.right}px`,
+    ['--canvas-selection-hint-mobile-bottom' as string]: `${workspaceLayout.canvas.overlays.selectionHint.mobile.bottom}px`,
+    ['--detail-panel-top' as string]: `${workspaceLayout.canvas.overlays.detailPanel.desktop.top}px`,
+    ['--detail-panel-right' as string]: `${workspaceLayout.canvas.overlays.detailPanel.desktop.right}px`,
+    ['--detail-panel-bottom' as string]: `${workspaceLayout.canvas.overlays.detailPanel.desktop.bottom}px`,
+    ['--detail-panel-width' as string]: `${workspaceLayout.canvas.overlays.detailPanel.desktop.width}px`,
+    ['--detail-panel-viewport-inset' as string]: `${workspaceLayout.canvas.overlays.detailPanel.desktop.viewportInset}px`,
+    ['--detail-panel-mobile-inset' as string]: `${workspaceLayout.canvas.overlays.detailPanel.mobile.inset}px`,
+    ['--detail-panel-mobile-max-height' as string]: workspaceLayout.canvas.overlays.detailPanel.mobile.maxHeight,
+  } as CSSProperties
 
   return (
     <div className={s.wrap}>
       <Breadcrumb />
-      <div className={s.canvas}>
+      <div className={s.canvas} style={canvasLayoutVars}>
         <div className={s.canvasIntro}>
-          <div className={s.kicker}>Deep Honey Workspace</div>
+          <div className={s.kicker}>{canvasContent.intro.kicker}</div>
           <h1>{workspaceTitle}</h1>
           <p>{workspaceDescription}</p>
         </div>
 
         <div className={s.toolbar}>
-          <button className={s.toolBtn} onClick={() => setShowNewModule(true)}>New child</button>
-          <button className={s.toolBtn} onClick={() => reload()}>Reload</button>
-          <button className={s.toolBtn} onClick={onToggleTheme}>{theme === 'light' ? 'Dark mode' : 'Light mode'}</button>
-          <button className={s.toolBtn} onClick={() => setShowPalette(true)}>Command menu</button>
+          <button className={s.toolBtn} onClick={() => setShowNewModule(true)}>{canvasContent.toolbar.newChild}</button>
+          <button className={s.toolBtn} onClick={() => reload()}>{canvasContent.toolbar.reload}</button>
+          <button className={s.toolBtn} onClick={onToggleTheme}>{themeToggleLabel}</button>
+          <button className={s.toolBtn} onClick={() => setShowPalette(true)}>{canvasContent.toolbar.commandMenu}</button>
         </div>
 
         <div className={s.workspaceMeta}>
           <div className={s.metricCard}>
-            <span className={s.metricLabel}>Submodules</span>
+            <span className={s.metricLabel}>{canvasContent.metrics.submodules}</span>
             <strong>{currentModule?.children.length ?? 0}</strong>
           </div>
           <div className={s.metricCard}>
-            <span className={s.metricLabel}>Visible externals</span>
+            <span className={s.metricLabel}>{canvasContent.metrics.externals}</span>
             <strong>{externalCount}</strong>
           </div>
           <div className={s.metricCard}>
-            <span className={s.metricLabel}>Theme</span>
+            <span className={s.metricLabel}>{canvasContent.metrics.theme}</span>
             <strong>{theme}</strong>
           </div>
         </div>
@@ -433,9 +496,9 @@ export function CanvasPage({ theme, onToggleTheme }: CanvasPageProps) {
           nodeTypes={NODE_TYPES}
           edgeTypes={EDGE_TYPES}
           fitView
-          fitViewOptions={{ padding: 0.16, maxZoom: 1.15 }}
-          minZoom={0.28}
-          maxZoom={2.2}
+          fitViewOptions={workspaceLayout.canvas.graph.fitView}
+          minZoom={workspaceLayout.canvas.graph.zoom.min}
+          maxZoom={workspaceLayout.canvas.graph.zoom.max}
           deleteKeyCode="Delete"
           proOptions={{ hideAttribution: true }}
           className={s.flow}
@@ -451,8 +514,8 @@ export function CanvasPage({ theme, onToggleTheme }: CanvasPageProps) {
 
         {!selectedEntry && (
           <div className={s.selectionHint}>
-            <strong>Click a card to inspect it.</strong>
-            <span>Double-click any visible module to drill into that workspace.</span>
+            <strong>{canvasContent.selectionHint.title}</strong>
+            <span>{canvasContent.selectionHint.body}</span>
           </div>
         )}
 
@@ -470,12 +533,12 @@ export function CanvasPage({ theme, onToggleTheme }: CanvasPageProps) {
           />
         )}
 
-        {loading && <div className={s.loading}>Loading workspace…</div>}
+        {loading && <div className={s.loading}>{canvasContent.loading}</div>}
 
         {!loading && currentModule && currentModule.children.length === 0 && (
           <div className={s.emptyHint}>
-            <h3>No submodules yet</h3>
-            <p>Create the first child module to start composing this workspace.</p>
+            <h3>{canvasContent.emptyState.title}</h3>
+            <p>{canvasContent.emptyState.body}</p>
           </div>
         )}
 

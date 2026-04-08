@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { workspaceContent } from '../../src/generated/workspace-content.generated'
 
 const screenshotOptions = {
   animations: 'disabled' as const,
@@ -15,7 +16,7 @@ async function waitForCanvas(page: Page) {
     return Boolean(hook?.getStore().currentModule)
   }, undefined, { timeout: 10_000 })
   await page.waitForSelector('.react-flow__node', { timeout: 10_000 })
-  await page.waitForSelector('nav[aria-label="Breadcrumb"]', { timeout: 10_000 })
+  await page.waitForSelector(`nav[aria-label="${workspaceContent.canvas.breadcrumb.ariaLabel}"]`, { timeout: 10_000 })
   await page.waitForTimeout(250)
 }
 
@@ -27,10 +28,10 @@ async function loadWorkspace(page: Page, theme: 'light' | 'dark' = 'light') {
 test.describe('Landing shell', () => {
   test('keeps the layered typography contract', async ({ page }) => {
     await page.goto('/?theme=light')
-    await expect(page.getByRole('heading', { name: 'Open a project and step into the graph.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: workspaceContent.landing.card.title })).toBeVisible()
 
-    const wordmarkFont = await page.getByText('ArchUI', { exact: true }).evaluate(el => window.getComputedStyle(el).fontFamily)
-    const headingFont = await page.getByRole('heading', { name: 'Open a project and step into the graph.' }).evaluate(el => window.getComputedStyle(el).fontFamily)
+    const wordmarkFont = await page.getByText(workspaceContent.landing.brandWordmark, { exact: true }).evaluate(el => window.getComputedStyle(el).fontFamily)
+    const headingFont = await page.getByRole('heading', { name: workspaceContent.landing.card.title }).evaluate(el => window.getComputedStyle(el).fontFamily)
     const bodyFont = await page.locator('body').evaluate(el => window.getComputedStyle(el).fontFamily)
 
     expect(wordmarkFont).toContain('Syne')
@@ -67,7 +68,7 @@ test.describe('Canvas workbench snapshots', () => {
       }).__archui
       await hook?.getStore().navigate('/project/gui/design-system')
     })
-    await expect(page.locator('nav[aria-label="Breadcrumb"]')).toContainText('Design System')
+    await expect(page.locator(`nav[aria-label="${workspaceContent.canvas.breadcrumb.ariaLabel}"]`)).toContainText('Design System')
     await expect(page).toHaveScreenshot('canvas-drilled-dark.png', screenshotOptions)
   })
 })

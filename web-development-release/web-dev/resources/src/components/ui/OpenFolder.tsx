@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { openDirectory } from '../../filesystem/fsa'
 import serverAdapter from '../../filesystem/serverAdapter'
+import { workspaceContent } from '../../generated/workspace-content.generated'
 import { useCanvasStore } from '../../store/canvas'
 import s from './OpenFolder.module.css'
 
@@ -10,8 +11,11 @@ interface OpenFolderProps {
 }
 
 export function OpenFolder({ theme, onToggleTheme }: OpenFolderProps) {
+  const landingContent = workspaceContent.landing
   const setAdapter = useCanvasStore(s => s.setAdapter)
-  const [serverUrl, setServerUrl] = useState(import.meta.env.VITE_SERVER_URL ?? 'http://localhost:3001')
+  const [serverUrl, setServerUrl] = useState(
+    import.meta.env.VITE_SERVER_URL ?? landingContent.actions.serverUrlPlaceholder,
+  )
   const [showUrl, setShowUrl] = useState(false)
 
   async function handleFsa() {
@@ -31,34 +35,31 @@ export function OpenFolder({ theme, onToggleTheme }: OpenFolderProps) {
   return (
     <div className={s.root}>
       <button className={s.themeBtn} onClick={onToggleTheme}>
-        {theme === 'light' ? 'Switch to dark' : 'Switch to light'}
+        {theme === 'light' ? landingContent.themeToggle.toDark : landingContent.themeToggle.toLight}
       </button>
 
       <div className={s.hero}>
         <div className={s.logoMark} />
-        <div className={s.logo}>ArchUI</div>
-        <div className={s.subtitle}>Canvas-first knowledge workspace for humans and AI agents.</div>
+        <div className={s.logo}>{landingContent.brandWordmark}</div>
+        <div className={s.subtitle}>{landingContent.subtitle}</div>
       </div>
 
       <div className={s.card}>
-        <div className={s.cardKicker}>Deep Honey / Lake Workspace</div>
-        <h1>Open a project and step into the graph.</h1>
-        <p>
-          This first wave focuses on the canvas workspace, so the entry page stays intentionally light
-          while the workbench carries the visual identity.
-        </p>
+        <div className={s.cardKicker}>{landingContent.card.kicker}</div>
+        <h1>{landingContent.card.title}</h1>
+        <p>{landingContent.card.body}</p>
 
         <div className={s.actionGrid}>
           <button className={s.btnPrimary} onClick={handleServer}>
-            Connect to local server
+            {landingContent.actions.connectServer}
           </button>
           <button className={s.btnSecondary} onClick={handleFsa}>
-            Open folder in Chrome or Edge
+            {landingContent.actions.openFolder}
           </button>
         </div>
 
         <button className={s.inlineBtn} onClick={() => setShowUrl(v => !v)}>
-          {showUrl ? 'Hide server URL' : 'Show server URL'}
+          {showUrl ? landingContent.actions.hideServerUrl : landingContent.actions.showServerUrl}
         </button>
 
         {showUrl && (
@@ -67,7 +68,7 @@ export function OpenFolder({ theme, onToggleTheme }: OpenFolderProps) {
               className={s.urlInput}
               value={serverUrl}
               onChange={e => setServerUrl(e.target.value)}
-              placeholder="http://localhost:3001"
+              placeholder={landingContent.actions.serverUrlPlaceholder}
             />
           </div>
         )}

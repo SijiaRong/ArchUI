@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
 import { Handle, Position } from '@xyflow/react'
 import type { NodeProps } from '@xyflow/react'
+import { workspaceContent } from '../../generated/workspace-content.generated'
 import type { ProjectIndexEntry } from '../../types'
 import s from './ModuleNode.module.css'
 
@@ -14,6 +15,7 @@ export interface ModuleNodeData {
 
 export function ModuleNode({ data, selected }: NodeProps & { data: ModuleNodeData }) {
   const { entry, variant, submoduleCount, linkCount, accentIndex } = data
+  const moduleCardContent = workspaceContent.moduleCard
   const style = {
     ['--node-accent' as string]: `var(--accent-${accentIndex})`,
   } as CSSProperties
@@ -27,7 +29,9 @@ export function ModuleNode({ data, selected }: NodeProps & { data: ModuleNodeDat
       <Handle type="target" position={Position.Left} className={`${s.handle} ${s.handleLeft}`} />
 
       <div className={s.chrome}>
-        <div className={s.eyebrow}>{variant === 'primary' ? 'Focused module' : 'Submodule'}</div>
+        <div className={s.eyebrow}>
+          {variant === 'primary' ? moduleCardContent.eyebrow.primary : moduleCardContent.eyebrow.child}
+        </div>
         <div className={s.name} title={entry.name}>{entry.name}</div>
         <div className={s.uuid}>{entry.uuid}</div>
       </div>
@@ -37,8 +41,8 @@ export function ModuleNode({ data, selected }: NodeProps & { data: ModuleNodeDat
       )}
 
       <div className={s.metaRow}>
-        <div className={s.badge}>{submoduleCount} submodules</div>
-        <div className={s.badge}>{linkCount} links</div>
+        <div className={s.badge}>{`${submoduleCount} ${moduleCardContent.badges.submodulesSuffix}`}</div>
+        <div className={s.badge}>{`${linkCount} ${moduleCardContent.badges.linksSuffix}`}</div>
       </div>
 
       <Handle type="source" position={Position.Right} className={`${s.handle} ${s.handleRight}`} />

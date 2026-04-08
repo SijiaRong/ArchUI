@@ -1,9 +1,9 @@
 .panel {
   position: absolute;
-  top: 88px;
-  right: 24px;
-  bottom: 24px;
-  width: min(360px, calc(100vw - 48px));
+  top: var(--detail-panel-top);
+  right: var(--detail-panel-right);
+  bottom: var(--detail-panel-bottom);
+  width: min(var(--detail-panel-width), calc(100vw - var(--detail-panel-viewport-inset)));
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -193,10 +193,10 @@
 @media (max-width: 1024px) {
   .panel {
     top: auto;
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
+    left: var(--detail-panel-mobile-inset);
+    right: var(--detail-panel-mobile-inset);
+    bottom: var(--detail-panel-mobile-inset);
     width: auto;
-    max-height: min(58vh, 480px);
+    max-height: var(--detail-panel-mobile-max-height);
   }
 }

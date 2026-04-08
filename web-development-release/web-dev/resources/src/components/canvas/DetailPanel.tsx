@@ -1,3 +1,4 @@
+import { workspaceContent } from '../../generated/workspace-content.generated'
 import type { ProjectIndexEntry } from '../../types'
 import s from './DetailPanel.module.css'
 
@@ -22,27 +23,29 @@ export function DetailPanel({
   onNavigate,
   onClose,
 }: DetailPanelProps) {
+  const detailContent = workspaceContent.detailPanel
+  const defaultRelation = workspaceContent.linkRenderer.defaultRelation
   const submodules = Object.entries(entry.submodules).map(([folderName, uuid]) => (
     projectIndex[uuid] ?? {
       uuid,
       path: '',
       parentPath: entry.path,
       name: folderName,
-      description: 'This submodule is declared but not currently indexed.',
+      description: detailContent.fallback.missingSubmodule,
       submodules: {},
       links: [],
     }
   ))
 
   const outgoing = entry.links.map(link => ({
-    relation: link.relation ?? 'related-to',
+    relation: link.relation ?? defaultRelation,
     description: link.description,
     target: projectIndex[link.uuid] ?? {
       uuid: link.uuid,
       path: '',
       parentPath: null,
-      name: 'Unknown module',
-      description: 'This UUID is not currently resolvable in the project index.',
+      name: detailContent.fallback.unknownModuleName,
+      description: detailContent.fallback.unknownModuleDescription,
       submodules: {},
       links: [],
     },
@@ -59,7 +62,7 @@ export function DetailPanel({
   )
 
   const tags = unique([
-    entry.uuid === currentModuleUuid ? 'Focused module' : 'Visible module',
+    entry.uuid === currentModuleUuid ? detailContent.kicker.focused : detailContent.kicker.visible,
     ...outgoing.slice(0, 2).map(item => item.relation),
     ...incoming.slice(0, 2).map(item => item.relation),
   ])
@@ -68,20 +71,22 @@ export function DetailPanel({
     <aside
       className={s.panel}
       style={{ ['--panel-accent' as string]: `var(--accent-${accentIndex})` }}
-      aria-label="Module details"
+      aria-label={detailContent.ariaLabel}
     >
       <div className={s.topBar}>
         <div className={s.dot} />
-        <button className={s.closeBtn} onClick={onClose} aria-label="Close details">
-          Close
+        <button className={s.closeBtn} onClick={onClose} aria-label={detailContent.closeAriaLabel}>
+          {detailContent.closeLabel}
         </button>
       </div>
 
       <div className={s.header}>
-        <div className={s.kicker}>{entry.uuid === currentModuleUuid ? 'Focused module' : 'Selection'}</div>
+        <div className={s.kicker}>
+          {entry.uuid === currentModuleUuid ? detailContent.kicker.focused : detailContent.kicker.selection}
+        </div>
         <h2 className={s.title}>{entry.name}</h2>
         <div className={s.uuid}>{entry.uuid}</div>
-        <p className={s.description}>{entry.description || 'No description available for this module yet.'}</p>
+        <p className={s.description}>{entry.description || detailContent.fallback.description}</p>
       </div>
 
       <div className={s.tagRow}>
@@ -92,23 +97,23 @@ export function DetailPanel({
 
       <div className={s.metrics}>
         <div className={s.metric}>
-          <span className={s.metricLabel}>Submodules</span>
+          <span className={s.metricLabel}>{detailContent.metrics.submodules}</span>
           <span className={s.metricValue}>{submodules.length}</span>
         </div>
         <div className={s.metric}>
-          <span className={s.metricLabel}>Outgoing</span>
+          <span className={s.metricLabel}>{detailContent.metrics.outgoing}</span>
           <span className={s.metricValue}>{outgoing.length}</span>
         </div>
         <div className={s.metric}>
-          <span className={s.metricLabel}>Incoming</span>
+          <span className={s.metricLabel}>{detailContent.metrics.incoming}</span>
           <span className={s.metricValue}>{incoming.length}</span>
         </div>
       </div>
 
       <div className={s.section}>
-        <div className={s.sectionTitle}>Submodules</div>
+        <div className={s.sectionTitle}>{detailContent.sections.submodules}</div>
         {submodules.length === 0 ? (
-          <div className={s.empty}>No direct submodules.</div>
+          <div className={s.empty}>{detailContent.empty.submodules}</div>
         ) : (
           submodules.map(item => (
             <button
@@ -125,9 +130,9 @@ export function DetailPanel({
       </div>
 
       <div className={s.section}>
-        <div className={s.sectionTitle}>Links To</div>
+        <div className={s.sectionTitle}>{detailContent.sections.linksTo}</div>
         {outgoing.length === 0 ? (
-          <div className={s.empty}>No outgoing links.</div>
+          <div className={s.empty}>{detailContent.empty.outgoing}</div>
         ) : (
           outgoing.map(item => (
             <button
@@ -145,9 +150,9 @@ export function DetailPanel({
       </div>
 
       <div className={s.section}>
-        <div className={s.sectionTitle}>Linked By</div>
+        <div className={s.sectionTitle}>{detailContent.sections.linkedBy}</div>
         {incoming.length === 0 ? (
-          <div className={s.empty}>No incoming links.</div>
+          <div className={s.empty}>{detailContent.empty.incoming}</div>
         ) : (
           incoming.map(item => (
             <button

@@ -35,9 +35,9 @@
 
 .canvasIntro {
   position: absolute;
-  top: 24px;
-  left: 28px;
-  max-width: 420px;
+  top: var(--canvas-intro-top);
+  left: var(--canvas-intro-left);
+  max-width: var(--canvas-intro-max-width);
   padding: 18px 22px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--line-default);
@@ -72,8 +72,8 @@
 
 .toolbar {
   position: absolute;
-  top: 28px;
-  right: 28px;
+  top: var(--canvas-toolbar-top);
+  right: var(--canvas-toolbar-right);
   display: flex;
   gap: 8px;
   z-index: 14;
@@ -102,8 +102,8 @@
 
 .workspaceMeta {
   position: absolute;
-  left: 28px;
-  top: 184px;
+  left: var(--canvas-meta-left);
+  top: var(--canvas-meta-top);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -136,8 +136,8 @@
 
 .selectionHint {
   position: absolute;
-  right: 28px;
-  bottom: 28px;
+  right: var(--canvas-selection-hint-right);
+  bottom: var(--canvas-selection-hint-bottom);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -223,38 +223,38 @@
 
 @media (max-width: 1180px) {
   .canvasIntro {
-    max-width: 320px;
+    max-width: var(--canvas-intro-tablet-max-width);
   }
 
   .workspaceMeta {
-    top: 170px;
+    top: var(--canvas-meta-tablet-top);
   }
 }
 
 @media (max-width: 900px) {
   .canvasIntro {
-    top: 16px;
-    left: 16px;
-    right: 16px;
+    top: var(--canvas-intro-mobile-top);
+    left: var(--canvas-intro-mobile-left);
+    right: var(--canvas-intro-mobile-right);
     max-width: none;
   }
 
   .toolbar {
-    top: 148px;
-    left: 16px;
-    right: 16px;
+    top: var(--canvas-toolbar-mobile-top);
+    left: var(--canvas-toolbar-mobile-left);
+    right: var(--canvas-toolbar-mobile-right);
   }
 
   .workspaceMeta {
-    left: 16px;
-    top: 214px;
+    left: var(--canvas-meta-mobile-left);
+    top: var(--canvas-meta-mobile-top);
     flex-direction: row;
     flex-wrap: wrap;
   }
 
   .selectionHint {
-    right: 16px;
-    left: 16px;
-    bottom: 16px;
+    right: var(--canvas-selection-hint-mobile-right);
+    left: var(--canvas-selection-hint-mobile-left);
+    bottom: var(--canvas-selection-hint-mobile-bottom);
   }
 }
