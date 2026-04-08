@@ -6,27 +6,26 @@
 <title>ArchUI Web 版本规划</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --ink: #1a1a1a;
-  --ink-light: #555;
-  --ink-muted: #999;
+  --ink: #1a1a2e;
+  --ink-light: #3d3f52;
+  --ink-muted: #7a7d90;
   --surface: #ffffff;
-  --surface-warm: #fafaf8;
-  --surface-cool: #f5f5f3;
-  --border: #e8e6e3;
-  --border-light: #f0eee9;
-  --accent: #c44b2b;
-  --accent-soft: #f4e8e4;
-  --accent-dark: #a03d23;
-  --green: #2d7a4f;
-  --green-soft: #e4f0ea;
-  --blue: #2b5fc4;
-  --blue-soft: #e4ebf4;
-  --gold: #b8860b;
-  --gold-soft: #f8f0dd;
-  --serif: 'Noto Serif SC', 'Songti SC', serif;
+  --surface-warm: #fafafa;
+  --surface-cool: #f5f5f5;
+  --border: #e8e8ec;
+  --border-light: #f0f0f2;
+  --accent: #F07040;
+  --accent-soft: rgba(240,112,64,0.06);
+  --accent-dark: #d85a2a;
+  --green: #3a8a5a;
+  --green-soft: #e6f2eb;
+  --blue: #5a7a9a;
+  --blue-soft: #e8eff5;
+  --gold: #c08030;
+  --gold-soft: #faf0dd;
   --sans: 'Noto Sans SC', 'PingFang SC', sans-serif;
   --mono: 'JetBrains Mono', 'SF Mono', monospace;
 }
@@ -65,7 +64,7 @@ body {
 }
 
 .section-title {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-weight: 700;
   font-size: 2rem;
   line-height: 1.3;
@@ -125,7 +124,7 @@ section {
 }
 
 .hero-title {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-weight: 900;
   font-size: clamp(2.8rem, 5vw, 4.2rem);
   line-height: 1.15;
@@ -220,7 +219,7 @@ section {
 }
 
 .pos-card-title {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-weight: 700;
   font-size: 1.35rem;
   margin-bottom: 8px;
@@ -499,7 +498,7 @@ section {
 }
 
 .timeline-title {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-weight: 700;
   font-size: 1.3rem;
   margin-bottom: 8px;
@@ -610,7 +609,7 @@ section {
 }
 
 .variants-header {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-weight: 600;
   font-size: 1.15rem;
   margin-bottom: 24px;
@@ -689,7 +688,7 @@ section {
   border-bottom: 1px solid #e8dfd5;
 }
 .variant-card:nth-child(4) .variant-preview-input { background: #e8dfd5; }
-.variant-card:nth-child(4) .variant-preview-btn { background: #c44b2b; }
+.variant-card:nth-child(4) .variant-preview-btn { background: #F07040; }
 
 .variant-label {
   padding: 12px 16px;
@@ -720,7 +719,7 @@ section {
 }
 
 .replace-flow-title {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-weight: 600;
   font-size: 1.15rem;
   margin-bottom: 32px;
@@ -892,7 +891,7 @@ section {
   padding: 20px 24px;
   background: var(--surface-warm);
   border-left: 3px solid var(--accent);
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-size: 1.05rem;
   color: var(--ink-light);
   font-style: italic;
@@ -906,7 +905,7 @@ section {
 }
 
 .footer-logo {
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-weight: 900;
   font-size: 1.5rem;
   letter-spacing: -0.02em;
@@ -1442,7 +1441,7 @@ document.querySelectorAll('section').forEach(section => {
 document.querySelectorAll('.variant-card').forEach(card => {
   card.addEventListener('click', () => {
     document.querySelectorAll('.variant-card').forEach(c => c.style.borderColor = '');
-    card.style.borderColor = '#c44b2b';
+    card.style.borderColor = '#F07040';
   });
 });
 </script>
