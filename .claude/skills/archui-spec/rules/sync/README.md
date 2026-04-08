@@ -25,7 +25,7 @@ After any `resources/` code change has passed acceptance testing, the correspond
 
 5. **Run validation**
    ```bash
-   node cli/resources/dist/index.js validate .
+   archui validate .
    ```
 
 ## What "affected" means

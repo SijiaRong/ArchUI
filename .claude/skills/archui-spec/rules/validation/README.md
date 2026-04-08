@@ -3,14 +3,7 @@
 ## Mandatory after every change — no exceptions
 
 ```bash
-node cli/resources/dist/index.js validate .
-```
-
-If the built CLI is unavailable, rebuild first:
-
-```bash
-cd cli/resources && npm run build
-node cli/resources/dist/index.js validate .
+archui validate .
 ```
 
 ## Reading output
