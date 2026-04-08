@@ -31,6 +31,7 @@ To discover what actions a module supports, list its `.archui/commands/` directo
 | After any spec change | [rules/validation/README.md](rules/validation/README.md) — mandatory, no exceptions |
 | After resources/ code changes pass testing | [rules/sync/README.md](rules/sync/README.md) |
 | Before or during a git commit | [rules/commits/README.md](rules/commits/README.md) |
+| Reading any module to understand it or its dependencies | [rules/context-loading/README.md](rules/context-loading/README.md) — always read identity doc + .archui/index.yaml together |
 
 ---
 
