@@ -1,5 +1,7 @@
-schema_version: 1
+schema_version: "1"
 uuid: d1bc98a5
+submodules:
+  run-command-harness: 38db4fe4
 links:
   - uuid: 7dbb954d
     relation: implements

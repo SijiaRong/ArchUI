@@ -30,3 +30,7 @@ The current navigation stack is persisted in browser/app session storage so the 
 ## Layout File
 
 Canvas card positions are stored in `.archui/layout.yaml`. The schema and writer rules are in `resources/layout-yaml-schema.md`.
+
+## Design System
+
+All visual properties — color, typography, spacing, and elevation — must use semantic tokens from the Design System (`gui/design-system/`). Do not use raw hex, pixel, or opacity values in implementations. Consult `gui/design-system/foundations/color/resources/token-table.md`, `gui/design-system/foundations/typography/resources/token-table.md`, `gui/design-system/foundations/spacing/resources/token-table.md`, and `gui/design-system/foundations/elevation/resources/token-table.md` for the complete token vocabulary.
