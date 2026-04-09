@@ -67,6 +67,31 @@
   transform: translateY(0) !important;
 }
 
+/* ─── Breathing ambient orbs ─────────────────────────────────────────────── */
+
+@keyframes breatheHoney {
+  0%, 100% { transform: scale(1)    translate(0, 0);    opacity: 0.18; }
+  50%       { transform: scale(1.35) translate(3%, 2%);  opacity: 0.28; }
+}
+
+@keyframes breatheLake {
+  0%, 100% { transform: scale(1)    translate(0, 0);    opacity: 0.13; }
+  50%       { transform: scale(1.2)  translate(-2%, 3%); opacity: 0.20; }
+}
+
+.sectionHero::before,
+.sectionHero::after,
+.sectionManifesto::before,
+.sectionCta::before,
+.sectionCta::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(80px);
+  will-change: transform, opacity;
+}
+
 /* ─── Word token animation ────────────────────────────────────────────────── */
 
 @keyframes wordFadeIn {
@@ -88,11 +113,24 @@
 /* ─── Section 1: Hero ─────────────────────────────────────────────────────── */
 
 .sectionHero {
-  background:
-    radial-gradient(circle at 20% 18%, color-mix(in srgb, var(--brand-honey) 18%, transparent), transparent 28%),
-    radial-gradient(circle at 78% 12%, color-mix(in srgb, var(--brand-lake) 18%, transparent), transparent 22%),
-    linear-gradient(180deg, var(--bg-base), color-mix(in srgb, var(--surface-canvas) 92%, var(--bg-base)));
+  background: linear-gradient(180deg, var(--bg-base), color-mix(in srgb, var(--surface-canvas) 92%, var(--bg-base)));
   color: var(--text);
+  overflow: hidden;
+}
+
+.sectionHero::before {
+  width: 45%; height: 45%;
+  left: 5%; top: 5%;
+  background: color-mix(in srgb, var(--brand-honey) 22%, transparent);
+  animation: breatheHoney 8s ease-in-out infinite;
+}
+
+.sectionHero::after {
+  width: 38%; height: 38%;
+  right: 5%; top: 2%;
+  background: color-mix(in srgb, var(--brand-lake) 18%, transparent);
+  animation: breatheLake 11s ease-in-out infinite;
+  animation-delay: -4s;
 }
 
 .heroInner {
@@ -145,6 +183,15 @@
 .sectionManifesto {
   background: var(--bg-base);
   color: var(--text);
+  overflow: hidden;
+}
+
+.sectionManifesto::before {
+  width: 50%; height: 50%;
+  right: -5%; bottom: -10%;
+  background: color-mix(in srgb, var(--brand-honey) 10%, transparent);
+  animation: breatheHoney 10s ease-in-out infinite;
+  animation-delay: -2s;
 }
 
 .manifestoInner {
@@ -345,9 +392,24 @@
 /* ─── Section 5: CTA ─────────────────────────────────────────────────────── */
 
 .sectionCta {
-  background:
-    radial-gradient(circle at 20% 80%, color-mix(in srgb, var(--brand-honey) 12%, transparent), transparent 32%),
-    var(--bg-base);
+  background: var(--bg-base);
+  overflow: hidden;
+}
+
+.sectionCta::before {
+  width: 55%; height: 55%;
+  left: -5%; bottom: -10%;
+  background: color-mix(in srgb, var(--brand-honey) 15%, transparent);
+  animation: breatheHoney 9s ease-in-out infinite;
+  animation-delay: -6s;
+}
+
+.sectionCta::after {
+  width: 35%; height: 35%;
+  right: 5%; top: 20%;
+  background: color-mix(in srgb, var(--brand-lake) 12%, transparent);
+  animation: breatheLake 13s ease-in-out infinite;
+  animation-delay: -3s;
 }
 
 .card {
