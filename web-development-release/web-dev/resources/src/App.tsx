@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useCanvasStore, detectServerRoot } from './store/canvas'
 import serverAdapter from './filesystem/serverAdapter'
 import { OpenFolder } from './components/ui/OpenFolder'
@@ -10,34 +10,21 @@ if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
   installTestHook()
 }
 
-type ThemeMode = 'light' | 'dark'
-
 function getSearchParams(): URLSearchParams {
   if (typeof window === 'undefined') return new URLSearchParams()
   return new URLSearchParams(window.location.search)
-}
-
-function getInitialTheme(): ThemeMode {
-  const params = getSearchParams()
-  const forcedTheme = params.get('theme')
-  if (forcedTheme === 'light' || forcedTheme === 'dark') return forcedTheme
-  const stored = window.localStorage.getItem('archui-theme')
-  if (stored === 'light' || stored === 'dark') return stored
-  return 'light'
 }
 
 export default function App() {
   const rootPath = useCanvasStore(s => s.rootPath)
   const setAdapter = useCanvasStore(s => s.setAdapter)
   const fsMode = useCanvasStore(s => s.fsMode)
-  const [theme, setTheme] = useState<ThemeMode>(getInitialTheme)
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
-      document.documentElement.dataset.theme = theme
-      window.localStorage.setItem('archui-theme', theme)
+      document.documentElement.dataset.theme = 'dark'
     }
-  }, [theme])
+  }, [])
 
   useEffect(() => {
     if (rootPath !== null) return
@@ -65,11 +52,9 @@ export default function App() {
     }
   }, [fsMode, rootPath, setAdapter])
 
-  const toggleTheme = () => setTheme(value => value === 'light' ? 'dark' : 'light')
-
   if (rootPath === null) {
-    return <OpenFolder theme={theme} onToggleTheme={toggleTheme} />
+    return <OpenFolder />
   }
 
-  return <CanvasPage theme={theme} onToggleTheme={toggleTheme} />
+  return <CanvasPage />
 }

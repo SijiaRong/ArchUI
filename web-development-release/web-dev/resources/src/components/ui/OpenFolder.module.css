@@ -33,20 +33,17 @@
   border-color: color-mix(in srgb, var(--brand-lake) 28%, var(--line-default));
 }
 
+.logoMark {
+  width: 72px;
+  height: 72px;
+  filter: drop-shadow(0 8px 20px color-mix(in srgb, var(--brand-honey) 28%, transparent));
+}
+
 .hero {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-}
-
-.logoMark {
-  width: 72px;
-  height: 72px;
-  border-radius: var(--radius-lg);
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--brand-honey) 86%, white), color-mix(in srgb, var(--brand-lake) 32%, white));
-  box-shadow: var(--shadow-card);
+  gap: 16px;
 }
 
 .logo {
