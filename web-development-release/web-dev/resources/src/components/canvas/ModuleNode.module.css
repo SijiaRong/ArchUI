@@ -68,11 +68,56 @@
   box-shadow: 0 0 18px color-mix(in srgb, var(--node-accent) 34%, transparent);
 }
 
+.eyebrowRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .eyebrow {
   font-size: 0.68rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-tertiary);
+}
+
+.docTypeBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid color-mix(in srgb, var(--node-accent) 24%, var(--line-subtle));
+  background: color-mix(in srgb, var(--node-accent) 12%, transparent);
+  color: color-mix(in srgb, var(--node-accent) 76%, var(--text-secondary));
+}
+
+.docTypeBadge[data-doc-type="SPEC"] {
+  border-color: color-mix(in srgb, var(--brand-honey) 30%, var(--line-subtle));
+  background: color-mix(in srgb, var(--brand-honey) 14%, transparent);
+  color: var(--brand-honey);
+}
+
+.docTypeBadge[data-doc-type="HARNESS"] {
+  border-color: color-mix(in srgb, var(--brand-lake) 30%, var(--line-subtle));
+  background: color-mix(in srgb, var(--brand-lake) 14%, transparent);
+  color: var(--brand-lake);
+}
+
+.docTypeBadge[data-doc-type="MEMORY"] {
+  border-color: color-mix(in srgb, var(--status-modified) 30%, var(--line-subtle));
+  background: color-mix(in srgb, var(--status-modified) 14%, transparent);
+  color: var(--status-modified);
+}
+
+.docTypeBadge[data-doc-type="SKILL"] {
+  border-color: color-mix(in srgb, var(--status-clean) 30%, var(--line-subtle));
+  background: color-mix(in srgb, var(--status-clean) 14%, transparent);
+  color: var(--status-clean);
 }
 
 .name {

@@ -21,6 +21,7 @@ import type { ArchModule, ModuleLink, ProjectIndexEntry } from '../../types'
 import { workspaceContent } from '../../generated/workspace-content.generated'
 import { workspaceLayout } from '../../generated/workspace-layout.generated'
 import { Breadcrumb } from '../nav/Breadcrumb'
+import { StatusBar } from '../nav/StatusBar'
 import { ContextMenu } from '../ui/ContextMenu'
 import type { MenuItem } from '../ui/ContextMenu'
 import { NewModuleDialog } from '../ui/NewModuleDialog'
@@ -510,13 +511,6 @@ function CanvasPageInner({}: CanvasPageProps) {
           <button className={s.toolBtn} onClick={() => setShowPalette(true)}>{canvasContent.toolbar.commandMenu}</button>
         </div>
 
-        <div className={s.workspaceMeta}>
-          <div className={s.metricCard}>
-            <span className={s.metricLabel}>{canvasContent.metrics.submodules}</span>
-            <strong>{currentModule?.children.length ?? 0}</strong>
-          </div>
-        </div>
-
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -614,6 +608,11 @@ function CanvasPageInner({}: CanvasPageProps) {
           onDismiss={() => setToast(null)}
         />
       )}
+
+      <StatusBar
+        selectedCount={selectedUuid ? 1 : 0}
+        moduleCount={currentModule?.children.length ?? 0}
+      />
     </div>
   )
 }

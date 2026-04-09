@@ -46,6 +46,14 @@
   gap: 16px;
 }
 
+.logoFull {
+  display: block;
+  height: 56px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
 .logo {
   font-family: var(--font-wordmark);
   font-size: clamp(2.2rem, 5vw, 3.5rem);
@@ -58,8 +66,61 @@
 .subtitle {
   max-width: 560px;
   text-align: center;
-  font-size: 1rem;
-  font-weight: 500;
+  font-family: var(--font-heading-sans);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--brand-honey);
+  letter-spacing: 0.02em;
+}
+
+.tagline {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.06em;
+}
+
+.highlights {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: min(780px, 100%);
+}
+
+.highlightCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 18px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line-default);
+  background: color-mix(in srgb, var(--surface-panel) 88%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-soft);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+
+.highlightCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+  border-color: color-mix(in srgb, var(--brand-honey) 28%, var(--line-default));
+}
+
+.highlightIcon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.highlightTitle {
+  font-family: var(--font-heading-sans);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.highlightDesc {
+  font-size: 0.8rem;
+  line-height: 1.55;
   color: var(--text-secondary);
 }
 
@@ -83,9 +144,9 @@
 .card h1 {
   font-family: var(--font-heading-sans);
   margin-top: 14px;
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
   font-weight: 700;
-  line-height: 1.08;
+  line-height: 1.15;
   color: var(--text-primary);
 }
 
@@ -166,8 +227,38 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 12%, transparent);
 }
 
+.footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.teamName {
+  font-family: var(--font-heading-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.footerDot {
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+}
+
+.footerTagline {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
+}
+
 @media (max-width: 720px) {
   .actionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .highlights {
     grid-template-columns: 1fr;
   }
 }

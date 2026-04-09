@@ -7,7 +7,11 @@
  */
 
 import archuiAMarkUrl from '../assets/brand/archui-a-mark.svg?url'
+import coralIconUrl from '../assets/brand/coral-icon.png?url'
+import archuiLogoUrl from '../assets/brand/archui-logo-transparent.png?url'
 
 export const brandAssetUrls = {
   'archui-a-mark': archuiAMarkUrl,
+  'coral-icon': coralIconUrl,
+  'archui-logo': archuiLogoUrl,
 } as const

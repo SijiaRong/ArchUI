@@ -17,6 +17,14 @@
   display: none;
 }
 
+.navLogo {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
 .crumb {
   display: flex;
   align-items: center;

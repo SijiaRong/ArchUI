@@ -13,17 +13,22 @@
 export const workspaceContent = {
   "brand": {
     "wordmark": "ArchUI",
+    "tagline": "Maintain once, generate everywhere.",
+    "teamName": "Arch Park",
+    "projectDefinitionEn": "AI-Native Generative Knowledge Engine",
+    "projectDefinitionZh": "AI 原生生成式知识引擎",
+    "projectValue": "让工作知识可维护、可复用、可生成，可持续产生价值。",
     "logoMark": {
-      "assetKey": "archui-a-mark",
-      "assetFile": "archui-a-mark.svg",
-      "alt": "ArchUI A logo mark",
-      "treatment": "Deep Honey single-color",
-      "glyphKind": "custom-vector-mark",
+      "assetKey": "coral-icon",
+      "assetFile": "coral-icon.png",
+      "alt": "ArchUI 珊瑚树图标",
+      "treatment": "Coral orange single-color",
+      "glyphKind": "custom-raster-mark",
       "geometry": {
-        "silhouette": "rounded-modular",
-        "lean": "forward",
-        "source": "vector-asset",
-        "notes": "Soft rounded strokes with a motion-forward apex cap. This is a custom SVG mark, not a font glyph."
+        "silhouette": "coral-tree",
+        "lean": "centered",
+        "source": "raster-asset",
+        "notes": "Coral tree icon from Hackathon VI — represents modular branching knowledge structure."
       },
       "sizes": {
         "sm": {
@@ -35,131 +40,159 @@ export const workspaceContent = {
           "height": 48
         },
         "hero": {
-          "width": 72,
-          "height": 72
+          "width": 80,
+          "height": 80
         }
       }
-    }
+    },
+    "logoFull": {
+      "assetKey": "archui-logo",
+      "assetFile": "archui-logo-transparent.png",
+      "alt": "ArchUI 完整 Logo",
+      "sizes": {
+        "landing": {
+          "height": 56
+        }
+      }
+    },
+    "highlights": [
+      {
+        "title": "一键 Skills 化",
+        "desc": "将知识文档变成可复用、相关联的 Skills 模块",
+        "icon": "⚡"
+      },
+      {
+        "title": "文档即编排",
+        "desc": "编排知识模块就是编排代码，改 Skills 即改代码",
+        "icon": "📐"
+      },
+      {
+        "title": "模块广场",
+        "desc": "发布、发现、替换、组合 — Skills 模块的 npm",
+        "icon": "🏪"
+      }
+    ]
   },
   "landing": {
     "brandWordmark": "ArchUI",
-    "subtitle": "Agent-native knowledge orchestration engine.",
+    "subtitle": "AI-Native Generative Knowledge Engine",
+    "tagline": "Maintain once, generate everywhere.",
     "themeToggle": {
       "toLight": "Switch to light",
       "toDark": "Switch to dark"
     },
     "card": {
-      "kicker": "Open a Project",
-      "title": "Step into the graph.",
-      "body": "Navigate your modules, trace dependencies, and give AI agents a reliable map of your codebase — all from the filesystem."
+      "kicker": "AI 原生生成式知识引擎",
+      "title": "让工作知识可维护、可复用、可生成。",
+      "body": "将知识结构化为可复用模块 — 每个模块独立可维护，AI 按需加载，直接生成代码。打开项目，进入模块关系图。"
     },
     "actions": {
-      "connectServer": "Connect to local server",
-      "openFolder": "Open folder in Chrome or Edge",
-      "showServerUrl": "Show server URL",
-      "hideServerUrl": "Hide server URL",
+      "connectServer": "连接本地服务器",
+      "openFolder": "在 Chrome/Edge 打开文件夹",
+      "showServerUrl": "显示服务器地址",
+      "hideServerUrl": "隐藏服务器地址",
       "serverUrlPlaceholder": "http://localhost:3001"
     }
   },
   "canvas": {
     "intro": {
-      "kicker": "Deep Honey Workspace",
+      "kicker": "Knowledge Canvas",
       "emptyTitle": "Open a workspace",
       "emptyDescription": "Pick a local ArchUI project to step into the graph."
     },
     "toolbar": {
-      "newChild": "New child",
-      "reload": "Reload",
+      "newChild": "＋ 新模块",
+      "reload": "刷新",
       "themeToggle": {
-        "toDark": "Dark mode",
-        "toLight": "Light mode"
+        "toDark": "深色模式",
+        "toLight": "浅色模式"
       },
-      "commandMenu": "Command menu"
+      "commandMenu": "⌘K"
     },
     "metrics": {
-      "submodules": "Submodules",
-      "externals": "Visible externals",
-      "theme": "Theme"
+      "submodules": "子模块",
+      "externals": "外部引用",
+      "theme": "主题"
     },
     "breadcrumb": {
       "ariaLabel": "Breadcrumb"
     },
     "selectionHint": {
-      "title": "Click a card to inspect it.",
-      "body": "Double-click any visible module to drill into that workspace."
+      "title": "点击卡片查看详情",
+      "body": "双击模块可钻入子级工作区"
     },
-    "loading": "Loading workspace...",
+    "loading": "正在加载工作区…",
     "emptyState": {
-      "title": "No submodules yet",
-      "body": "Create the first child module to start composing this workspace."
+      "title": "暂无子模块",
+      "body": "创建第一个子模块，开始构建你的知识模块树。"
     },
     "placeholder": {
-      "unknownModuleName": "Unknown module",
-      "unknownModuleDescription": "This module UUID is not currently resolvable in the project index."
+      "unknownModuleName": "未知模块",
+      "unknownModuleDescription": "该模块 UUID 在当前项目索引中无法解析。"
     },
     "contextMenu": {
-      "openModule": "Open module",
-      "newChildModule": "New child module",
-      "reloadWorkspace": "Reload workspace",
-      "copyModule": "Copy module",
-      "pasteModule": "Paste module",
-      "copiedToClipboard": "Copied to clipboard",
-      "nothingToPaste": "Nothing to paste",
-      "pasteFailed": "Paste failed",
-      "deleteModule": "Delete module",
-      "deleteConfirm": "Delete this module? This cannot be undone.",
-      "deleteFailed": "Delete failed"
+      "openModule": "打开模块",
+      "newChildModule": "新建子模块",
+      "reloadWorkspace": "刷新工作区",
+      "copyModule": "复制模块",
+      "pasteModule": "粘贴模块",
+      "copiedToClipboard": "已复制到剪贴板",
+      "nothingToPaste": "剪贴板中无可粘贴内容",
+      "pasteFailed": "粘贴失败",
+      "deleteModule": "删除模块",
+      "deleteConfirm": "确认删除该模块？此操作不可撤回。",
+      "deleteFailed": "删除失败"
     },
     "commands": {
-      "newChildModule": "New child module",
-      "reloadWorkspace": "Reload workspace",
-      "reloadHint": "Reload current module",
-      "openModuleHint": "Open module"
+      "newChildModule": "新建子模块",
+      "reloadWorkspace": "刷新工作区",
+      "reloadHint": "重新加载当前模块",
+      "openModuleHint": "打开模块"
     }
   },
   "detailPanel": {
-    "ariaLabel": "Module details",
-    "closeLabel": "Close",
-    "closeAriaLabel": "Close details",
+    "ariaLabel": "模块详情",
+    "closeLabel": "关闭",
+    "closeAriaLabel": "关闭详情面板",
     "kicker": {
-      "focused": "Focused module",
-      "selection": "Selection",
-      "visible": "Visible module"
+      "focused": "当前模块",
+      "selection": "已选中",
+      "visible": "可见模块"
     },
     "fallback": {
-      "description": "No description available for this module yet.",
-      "missingSubmodule": "This submodule is declared but not currently indexed.",
-      "unknownModuleName": "Unknown module",
-      "unknownModuleDescription": "This UUID is not currently resolvable in the project index."
+      "description": "该模块暂无描述信息。",
+      "missingSubmodule": "子模块已声明但尚未索引。",
+      "unknownModuleName": "未知模块",
+      "unknownModuleDescription": "该 UUID 在当前项目索引中无法解析。"
     },
     "metrics": {
-      "submodules": "Submodules",
-      "outgoing": "Outgoing",
-      "incoming": "Incoming"
+      "submodules": "子模块",
+      "outgoing": "出链",
+      "incoming": "入链"
     },
     "sections": {
-      "submodules": "Submodules",
-      "linksTo": "Links To",
-      "linkedBy": "Linked By"
+      "submodules": "子模块",
+      "linksTo": "链接到",
+      "linkedBy": "被链接"
     },
     "empty": {
-      "submodules": "No direct submodules.",
-      "outgoing": "No outgoing links.",
-      "incoming": "No incoming links."
+      "submodules": "暂无子模块",
+      "outgoing": "暂无出链",
+      "incoming": "暂无入链"
     }
   },
   "moduleCard": {
     "eyebrow": {
-      "primary": "Focused module",
-      "child": "Submodule"
+      "primary": "当前模块",
+      "child": "子模块"
     },
     "externalEyebrow": {
-      "incoming": "Incoming reference",
-      "external": "External reference"
+      "incoming": "入链引用",
+      "external": "外部引用"
     },
     "badges": {
-      "submodulesSuffix": "submodules",
-      "linksSuffix": "links"
+      "submodulesSuffix": "子模块",
+      "linksSuffix": "链接"
     }
   },
   "linkRenderer": {
