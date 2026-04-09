@@ -13,3 +13,6 @@ submodules:
   operations: 4d9a2c6f
   ArchUIRed-harness: ff000001
   hackathon: aa100001
+links:
+  - uuid: aa100001
+    relation: related-to
