@@ -5,11 +5,19 @@ import * as readline from 'readline'
 import { fileURLToPath } from 'url'
 import { execSync, spawnSync, spawn } from 'child_process'
 import { parse as parseYaml } from 'yaml'
+import { runValidate } from './validate.js'
 
 import CLAUDE_CODE_DEPLOY_SH from './templates/claude-code-deploy.sh'
 import CONVERT_PROJECT_PROMPT from '../../../core/agent-config/command-templates/resources/convert-project.md'
+import RECONSTRUCT_PROJECT_PROMPT from '../../../core/agent-config/command-templates/resources/reconstruct-project.md'
 
 const CURSOR_DEPLOY_SH = ''
+
+const SKIP_DIRS = new Set([
+  '.git', 'node_modules', '.archui', '.archui-backup', '.archui-temp',
+  'dist', 'build', '.next', '__pycache__', 'vendor', '.cache',
+  'coverage', 'out', 'tmp',
+])
 
 // ---------------------------------------------------------------------------
 // Types
@@ -209,6 +217,10 @@ function isInteractiveTTY(): boolean {
   return Boolean(process.stdin.isTTY && process.stdout.isTTY)
 }
 
+function isVSCodeTerminal(): boolean {
+  return process.env.TERM_PROGRAM === 'vscode'
+}
+
 async function promptLine(question: string): Promise<string> {
   return new Promise((resolve) => {
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
@@ -217,6 +229,22 @@ async function promptLine(question: string): Promise<string> {
       resolve(answer.trim())
     })
   })
+}
+
+async function promptConfirm(question: string): Promise<boolean> {
+  const answer = await promptLine(`${question} [Y/n] `)
+  return answer === '' || answer.toLowerCase().startsWith('y')
+}
+
+function openInBrowser(url: string): void {
+  const cmd =
+    process.platform === 'darwin' ? 'open' :
+    process.platform === 'win32'  ? 'start' : 'xdg-open'
+  try {
+    spawnSync(cmd, [url], { stdio: 'ignore', shell: process.platform === 'win32' })
+  } catch {
+    // Not fatal — URL already printed to terminal
+  }
 }
 
 async function promptMultiSelect(
@@ -344,6 +372,75 @@ async function runAgentSetup(targetPath: string): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
+// Backup & reconstruct helpers
+// ---------------------------------------------------------------------------
+
+function copyDirRecursive(src: string, dest: string): void {
+  fs.mkdirSync(dest, { recursive: true })
+  const entries = fs.readdirSync(src, { withFileTypes: true })
+  for (const entry of entries) {
+    if (SKIP_DIRS.has(entry.name)) continue
+    const srcPath = path.join(src, entry.name)
+    const destPath = path.join(dest, entry.name)
+    if (entry.isDirectory()) {
+      copyDirRecursive(srcPath, destPath)
+    } else {
+      fs.copyFileSync(srcPath, destPath)
+    }
+  }
+}
+
+function removeDirContents(dir: string): void {
+  const entries = fs.readdirSync(dir, { withFileTypes: true })
+  for (const entry of entries) {
+    if (SKIP_DIRS.has(entry.name)) continue
+    if (entry.name === '.archui-backup' || entry.name === '.archui-temp') continue
+    if (entry.name === 'README.md' || entry.name === '.archui') continue
+    const fullPath = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      fs.rmSync(fullPath, { recursive: true, force: true })
+    } else {
+      fs.unlinkSync(fullPath)
+    }
+  }
+}
+
+async function runBackupPhase(rootPath: string): Promise<void> {
+  const backupDir = path.join(rootPath, '.archui-backup')
+  const tempDir = path.join(rootPath, '.archui-temp')
+
+  if (fs.existsSync(backupDir) || fs.existsSync(tempDir)) {
+    console.error('Error: .archui-backup/ or .archui-temp/ already exists. Remove them first or use a clean directory.')
+    process.exit(1)
+  }
+
+  console.log('Phase 1: Backing up project files...')
+  copyDirRecursive(rootPath, backupDir)
+  console.log(`  ✓ Created .archui-backup/ (${countFiles(backupDir)} files)`)
+
+  copyDirRecursive(rootPath, tempDir)
+  console.log(`  ✓ Created .archui-temp/ (${countFiles(tempDir)} files)`)
+
+  console.log('  → Removing originals from working tree...')
+  removeDirContents(rootPath)
+  console.log('  ✓ Working tree cleaned (only .archui/, README.md, .archui-backup/, .archui-temp/ remain)')
+}
+
+function countFiles(dir: string): number {
+  let count = 0
+  const walk = (d: string) => {
+    const entries = fs.readdirSync(d, { withFileTypes: true })
+    for (const entry of entries) {
+      const fullPath = path.join(d, entry.name)
+      if (entry.isDirectory()) walk(fullPath)
+      else count++
+    }
+  }
+  walk(dir)
+  return count
+}
+
+// ---------------------------------------------------------------------------
 // Conversion agent
 // ---------------------------------------------------------------------------
 
@@ -438,6 +535,96 @@ async function runConversionAgent(rootPath: string): Promise<number> {
 }
 
 // ---------------------------------------------------------------------------
+// Reconstruction agent
+// ---------------------------------------------------------------------------
+
+async function runReconstructAgent(rootPath: string): Promise<number> {
+  let prompt = RECONSTRUCT_PROJECT_PROMPT
+  prompt = prompt.replace(/\{\{project\.root\}\}/g, rootPath)
+
+  const hasClaudeCode = commandExists('claude')
+  const hasCodex = detectCodex()
+
+  if (!hasClaudeCode && !hasCodex) {
+    console.log('\nNo supported agent CLI detected (claude / codex).')
+    console.log('To complete reconstruction manually, run:')
+    console.log(`  claude --dangerously-skip-permissions --add-dir "${rootPath}" -p "<prompt>"`)
+    return 0
+  }
+
+  return new Promise<number>((resolve) => {
+    let child: ReturnType<typeof spawn>
+
+    if (hasClaudeCode) {
+      console.log('\nInvoking Claude Code for reconstruction (autonomous mode)...')
+      child = spawn('claude', [
+        '--dangerously-skip-permissions',
+        '--verbose',
+        '--add-dir', rootPath,
+        '-p', prompt,
+        '--output-format', 'stream-json',
+      ], {
+        cwd: rootPath,
+        stdio: ['inherit', 'pipe', 'inherit'],
+        shell: false,
+      })
+
+      let buffer = ''
+      child.stdout?.on('data', (chunk: Buffer) => {
+        buffer += chunk.toString()
+        const lines = buffer.split('\n')
+        buffer = lines.pop() ?? ''
+        for (const line of lines) {
+          const trimmed = line.trim()
+          if (!trimmed) continue
+          try {
+            const event = JSON.parse(trimmed)
+            if (event.type === 'assistant' && Array.isArray(event.message?.content)) {
+              for (const block of event.message.content) {
+                if (block.type === 'text') process.stdout.write(block.text)
+              }
+            }
+          } catch {
+            process.stdout.write(line + '\n')
+          }
+        }
+      })
+
+      child.stdout?.on('end', () => {
+        if (buffer.trim()) {
+          try {
+            const event = JSON.parse(buffer.trim())
+            if (event.type === 'assistant' && Array.isArray(event.message?.content)) {
+              for (const block of event.message.content) {
+                if (block.type === 'text') process.stdout.write(block.text)
+              }
+            }
+          } catch {
+            process.stdout.write(buffer + '\n')
+          }
+        }
+      })
+    } else {
+      console.log('\nInvoking Codex for reconstruction (autonomous mode)...')
+      child = spawn('codex', ['--full-auto', prompt], {
+        cwd: rootPath,
+        stdio: 'inherit',
+        shell: false,
+      })
+    }
+
+    child.on('close', (code) => {
+      resolve(code ?? 0)
+    })
+
+    child.on('error', (err) => {
+      console.error(`Agent CLI error: ${err.message}`)
+      resolve(1)
+    })
+  })
+}
+
+// ---------------------------------------------------------------------------
 // Main init function
 // ---------------------------------------------------------------------------
 
@@ -446,6 +633,8 @@ export interface InitOptions {
   description?: string
   skipAgents?: boolean
   convert?: boolean
+  reconstruct?: boolean
+  openUrl?: string
 }
 
 export async function runInit(targetPath: string, options: InitOptions): Promise<void> {
@@ -548,6 +737,36 @@ export async function runInit(targetPath: string, options: InitOptions): Promise
     if (agentExitCode !== 0) {
       console.error(`\nAgent invocation failed (exit code ${agentExitCode}).`)
       process.exit(3)
+    }
+  }
+
+  // 12. Reconstruction phase (--reconstruct)
+  if (options.reconstruct) {
+    console.log('\nStarting project reconstruction...')
+    await runBackupPhase(resolvedPath)
+    console.log('\nPhase 1 complete. Invoking reconstruction agent for phases 2-7...')
+    const agentExitCode = await runReconstructAgent(resolvedPath)
+    if (agentExitCode !== 0) {
+      console.error(`\nReconstruction agent failed (exit code ${agentExitCode}).`)
+      console.log('.archui-backup/ is preserved — your original files are safe.')
+      process.exit(3)
+    }
+  }
+
+  // 13. Post-init: validate then optionally open browser
+  const { exitCode: validateExit } = runValidate(resolvedPath)
+  if (validateExit > 0) {
+    console.log('\nValidation found errors. Fix them before opening ArchUI.')
+  } else {
+    const url = options.openUrl
+      ?? process.env.ARCHUI_GUI_URL
+      ?? 'https://actionandlink.com/archui'
+
+    if (isVSCodeTerminal()) {
+      console.log(`\n✔ Validation passed. Open ArchUI: ${url}`)
+    } else if (isInteractiveTTY()) {
+      const yes = await promptConfirm('\n✔ Validation passed. Open ArchUI in browser?')
+      if (yes) openInBrowser(url)
     }
   }
 }

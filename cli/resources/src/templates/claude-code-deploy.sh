@@ -45,6 +45,9 @@ mkdir -p "${DEST_SKILLS}/archui-spec/commands"
 cp "${CMD_TEMPLATES}/convert-project.md" \
    "${DEST_SKILLS}/archui-spec/commands/convert-project.md"
 
+cp "${CMD_TEMPLATES}/reconstruct-project.md" \
+   "${DEST_SKILLS}/archui-spec/commands/reconstruct-project.md"
+
 # ---------------------------------------------------------------------------
 echo "==> Deployment complete."
 echo "    Deployed to: ${DEST_SKILLS}"
