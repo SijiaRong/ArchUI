@@ -16,7 +16,6 @@ export function StatusBar({ selectedCount, moduleCount, theme, onToggleTheme }: 
     <footer className={s.bar}>
       <span className={s.brand}>
         <strong className={s.wordmark}>{brand.wordmark}</strong>
-        <span className={s.brandDef}>{brand.projectDefinitionEn}</span>
       </span>
       <span className={s.sep} />
       <span className={`${s.badge} ${isSelected ? s.badgeSelected : s.badgeIdle}`}>
@@ -31,7 +30,7 @@ export function StatusBar({ selectedCount, moduleCount, theme, onToggleTheme }: 
       <button className={s.themeBtn} onClick={onToggleTheme}>
         {theme === 'dark' ? '☀️' : '🌙'}
       </button>
-      <span className={s.teamTag}>{brand.teamName}</span>
+      <span className={s.teamTag}>ArchUI</span>
     </footer>
   )
 }

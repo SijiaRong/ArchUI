@@ -71,7 +71,7 @@ export default function App() {
   if (rootPath === null) {
     return (
       <I18nProvider>
-        <OpenFolder theme={theme} onToggleTheme={toggleTheme} />
+        <OpenFolder />
       </I18nProvider>
     )
   }
