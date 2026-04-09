@@ -1,13 +1,17 @@
 import { useCanvasStore } from '../../store/canvas'
 import { workspaceContent } from '../../generated/workspace-content.generated'
+import { brandAssetUrls } from '../../generated/brand-assets.generated'
 import s from './Breadcrumb.module.css'
 
 export function Breadcrumb() {
   const breadcrumb = useCanvasStore(s => s.breadcrumb)
   const navigate = useCanvasStore(s => s.navigate)
+  const brand = workspaceContent.brand
+  const coralUrl = brandAssetUrls[brand.logoMark.assetKey as keyof typeof brandAssetUrls]
 
   return (
     <nav className={s.nav} aria-label={workspaceContent.canvas.breadcrumb.ariaLabel}>
+      <img className={s.navLogo} src={coralUrl} alt={brand.logoMark.alt} width={22} height={22} />
       {breadcrumb.map((crumb, index) => {
         const isLast = index === breadcrumb.length - 1
         return (

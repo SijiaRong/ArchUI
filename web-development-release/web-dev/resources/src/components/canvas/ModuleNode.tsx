@@ -21,9 +21,29 @@ export interface ModuleNodeData {
   accentIndex: number
 }
 
+type DocType = 'SPEC' | 'HARNESS' | 'MEMORY' | 'SKILL' | 'README'
+
+const DOC_TYPE_LABELS: Record<DocType, string> = {
+  SPEC: 'SPEC',
+  HARNESS: 'HARNESS',
+  MEMORY: 'MEMORY',
+  SKILL: 'SKILL',
+  README: 'MODULE',
+}
+
+function inferDocType(path: string, name: string): DocType {
+  const lower = (path + '/' + name).toLowerCase()
+  if (lower.includes('-harness') || lower.includes('harness')) return 'HARNESS'
+  if (lower.includes('-memory') || lower.includes('memory-node')) return 'MEMORY'
+  if (lower.includes('skill')) return 'SKILL'
+  if (lower.includes('spec') || lower.includes('-development') || lower.includes('-release')) return 'SPEC'
+  return 'README'
+}
+
 export function ModuleNode({ data, selected }: NodeProps & { data: ModuleNodeData }) {
   const { entry, variant, submoduleCount, linkCount, accentIndex } = data
   const moduleCardContent = workspaceContent.moduleCard
+  const docType = inferDocType(entry.path, entry.name)
   const style = {
     ['--node-accent' as string]: `var(--accent-${accentIndex})`,
   } as CSSProperties
@@ -37,8 +57,13 @@ export function ModuleNode({ data, selected }: NodeProps & { data: ModuleNodeDat
       <Handle type="target" position={Position.Left} className={`${s.handle} ${s.handleLeft}`} />
 
       <div className={s.chrome}>
-        <div className={s.eyebrow}>
-          {variant === 'primary' ? moduleCardContent.eyebrow.primary : moduleCardContent.eyebrow.child}
+        <div className={s.eyebrowRow}>
+          <span className={s.eyebrow}>
+            {variant === 'primary' ? moduleCardContent.eyebrow.primary : moduleCardContent.eyebrow.child}
+          </span>
+          <span className={s.docTypeBadge} data-doc-type={docType}>
+            {DOC_TYPE_LABELS[docType]}
+          </span>
         </div>
         <div className={s.name} title={entry.name}>{entry.name}</div>
         <div className={s.uuid}>{entry.uuid}</div>
