@@ -30,7 +30,13 @@ program
   .option('--description <desc>', 'One-sentence summary for README.md frontmatter')
   .option('--skip-agents', 'Skip agent detection and plugin installation phase')
   .option('--convert', 'Convert the existing project tree into ArchUI modules via agent invocation')
-  .action(async (targetPath: string | undefined, options: { name?: string; description?: string; skipAgents?: boolean; convert?: boolean }) => {
+  .option('--reconstruct', 'Deep restructuring: backup project, analyze, and redesign module tree from scratch')
+  .option('--open-url <url>', 'Override the URL opened after successful validation')
+  .action(async (targetPath: string | undefined, options: { name?: string; description?: string; skipAgents?: boolean; convert?: boolean; reconstruct?: boolean; openUrl?: string }) => {
+    if (options.convert && options.reconstruct) {
+      console.error('Error: --convert and --reconstruct are mutually exclusive. Use one or the other.')
+      process.exit(1)
+    }
     const root = targetPath ?? process.cwd()
     await runInit(root, options)
   })

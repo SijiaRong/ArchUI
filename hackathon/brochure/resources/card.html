@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>ArchUI — A5 宣传硬卡</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Lexend:wght@300;400;500;600;700&family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --honey: #C26100;
+            --honey-strong: #9B4D00;
+            --lake: #2F7886;
+            --surface-page: #F5EDE4;
+            --surface-panel: #FFF8F0;
+            --surface-raised: #FAF1E5;
+            --text-primary: #2C1B0C;
+            --text-secondary: #5E4832;
+            --text-tertiary: #8A725C;
+            --text-inverse: #FFF5E9;
+            --line-default: rgba(86, 57, 27, .18);
+            --line-subtle: rgba(86, 57, 27, .12);
+            --status-clean: #4B7A5E;
+        }
+
+        html, body {
+            background: #d8cfc4;
+            font-family: 'Lexend', 'Noto Sans SC', 'PingFang SC', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            gap: 40px;
+        }
+
+        .page-label {
+            font-size: 14px;
+            color: #666;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.1em;
+        }
+
+        .card {
+            width: 592px;
+            height: 840px;
+            background: var(--surface-page);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 18px 40px rgba(85, 55, 24, .12);
+            border-radius: 6px;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(92, 70, 49, .04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(92, 70, 49, .04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .card > * { position: relative; z-index: 1; }
+
+        /* ============ FRONT SIDE ============ */
+
+        .front-header {
+            height: 126px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .front-header .logo {
+            height: 52px;
+            width: auto;
+        }
+
+        .front-header .team {
+            font-family: 'Sora', 'Noto Sans SC', sans-serif;
+            font-size: 13px;
+            color: var(--text-tertiary);
+            letter-spacing: 0.18em;
+            font-weight: 500;
+        }
+
+        .front-visual {
+            height: 336px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+        }
+
+        .front-visual svg { width: 100%; height: 100%; }
+
+        .n-box {
+            fill: var(--surface-panel);
+            stroke: var(--line-default);
+            stroke-width: 1.5;
+            filter: drop-shadow(0 2px 6px rgba(85, 55, 24, .08));
+        }
+        .n-hdr-spec { fill: var(--honey); }
+        .n-hdr-memory { fill: var(--status-clean); }
+        .n-hdr-harness { fill: #6a4aaa; }
+        .n-hdr-config { fill: var(--honey-strong); }
+        .n-hdr-generic { fill: var(--lake); }
+        .n-lbl { fill: var(--text-inverse); font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+        .n-sub { fill: var(--text-secondary); font-family: 'JetBrains Mono', monospace; }
+        .n-port { fill: var(--honey); stroke: var(--surface-panel); stroke-width: 2; }
+        .conn { fill: none; stroke: var(--honey); stroke-opacity: 0.35; stroke-width: 2; stroke-dasharray: 6 3; }
+        .conn-lake { fill: none; stroke: var(--lake); stroke-opacity: 0.3; stroke-width: 1.5; }
+        .conn-s { fill: none; stroke: var(--text-tertiary); stroke-opacity: 0.2; stroke-width: 1.5; }
+
+        .front-title {
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-align: center;
+            padding: 0 32px;
+        }
+
+        .front-title .def-en {
+            font-family: 'Sora', 'Lexend', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+
+        .front-title .def-zh {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 16px;
+            color: var(--honey);
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .front-title .value {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .front-title .tagline {
+            font-family: 'Sora', sans-serif;
+            font-size: 10px;
+            color: var(--text-tertiary);
+            font-style: italic;
+            letter-spacing: 0.06em;
+            margin-top: 4px;
+        }
+
+        .front-intro {
+            height: 238px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 36px;
+            gap: 16px;
+        }
+
+        .intro-pain {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            text-align: center;
+            padding: 14px 20px;
+            background: var(--surface-raised);
+            border-left: 3px solid var(--honey);
+            border-radius: 0 10px 10px 0;
+            width: 100%;
+        }
+
+        .intro-solve {
+            font-size: 13px;
+            color: var(--text-primary);
+            line-height: 1.8;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .intro-solve strong {
+            color: var(--honey);
+            font-weight: 700;
+        }
+
+        /* ============ BACK SIDE ============ */
+
+        .back-section-title {
+            text-align: center;
+            padding: 28px 0 20px;
+        }
+
+        .back-section-title span {
+            font-family: 'Sora', 'Noto Sans SC', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            position: relative;
+        }
+
+        .back-section-title span::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: var(--honey);
+            border-radius: 2px;
+        }
+
+        .back-highlights {
+            height: 504px;
+            display: flex;
+            flex-direction: column;
+            padding: 0 32px;
+            gap: 16px;
+        }
+
+        .h-card {
+            flex: 1;
+            background: var(--surface-panel);
+            border: 1px solid var(--line-default);
+            border-radius: 14px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(85, 55, 24, .04);
+        }
+
+        .h-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: var(--honey);
+            border-radius: 14px 0 0 14px;
+        }
+
+        .h-num {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--honey);
+            color: var(--text-inverse);
+            font-family: 'Sora', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .h-body { flex: 1; }
+
+        .h-body .h-title {
+            font-family: 'Sora', 'Noto Sans SC', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .h-body .h-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .h-body .h-example {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 8px;
+        }
+
+        .back-contact {
+            height: 210px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 36px;
+            padding: 0 32px;
+        }
+
+        .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qr-section img {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            border: 1.5px solid var(--line-default);
+        }
+
+        .qr-section .qr-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .contact-sep {
+            width: 1px;
+            height: 80px;
+            background: linear-gradient(180deg, transparent, var(--honey), transparent);
+            opacity: 0.3;
+        }
+
+        .github-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .github-section .gh-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .github-section .gh-repo {
+            font-size: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .github-section .gh-team {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        .back-bottom {
+            height: 126px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 0 40px;
+        }
+
+        .back-bottom .bottom-line {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-align: center;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .back-bottom .bottom-brand {
+            font-family: 'Sora', sans-serif;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            letter-spacing: 0.15em;
+        }
+
+        .back-bottom .bottom-bar {
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--honey), var(--lake), transparent);
+            border-radius: 2px;
+            opacity: 0.4;
+        }
+
+        @page { size: 148mm 210mm; margin: 0; }
+        @media print {
+            html, body { background: #fff; padding: 0; gap: 0; }
+            .page-label { display: none; }
+            .card { box-shadow: none; border-radius: 0; page-break-after: always; break-after: page; }
+            .card:last-child { page-break-after: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== FRONT SIDE ===== -->
+    <div class="page-label">FRONT — 正面</div>
+    <div class="card">
+
+        <section class="front-header">
+            <img src="archui-logo-transparent.png" alt="ArchUI" class="logo">
+            <div class="team">ARCH PARK</div>
+        </section>
+
+        <section class="front-title">
+            <div class="def-en">AI-Native Generative<br>Knowledge Engine</div>
+            <div class="def-zh">AI 原生生成式知识引擎</div>
+            <div class="value">让工作知识可维护、可复用、可生成，可持续产生价值。</div>
+            <div class="tagline">Maintain once, generate everywhere.</div>
+        </section>
+
+        <section class="front-visual">
+            <svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 210,78 C 260,78 260,185 305,185" class="conn"/>
+                <path d="M 210,95 C 275,95 275,260 320,260" class="conn"/>
+                <path d="M 210,65 C 295,48 345,48 380,68" class="conn-lake"/>
+                <path d="M 400,170 C 428,170 428,115 400,115" class="conn-s"/>
+
+                <g transform="translate(20, 25)">
+                    <rect width="140" height="75" rx="8" ry="8" class="n-box"/>
+                    <rect width="140" height="22" rx="8" ry="8" class="n-hdr-generic"/>
+                    <text x="70" y="15" text-anchor="middle" class="n-lbl" font-size="10">README.md</text>
+                    <text x="10" y="38" class="n-sub" font-size="8.5">name: ArchUI</text>
+                    <text x="10" y="50" class="n-sub" font-size="8.5">description:</text>
+                    <text x="10" y="62" class="n-sub" font-size="8.5">  模块化文档编排系统</text>
+                    <circle cx="140" cy="42" r="4.5" class="n-port"/>
+                </g>
+
+                <g transform="translate(65, 120)">
+                    <rect width="165" height="95" rx="8" ry="8" class="n-box"/>
+                    <rect width="165" height="24" rx="8" ry="8" class="n-hdr-spec"/>
+                    <text x="82" y="16" text-anchor="middle" class="n-lbl" font-size="11">SPEC.md</text>
+                    <text x="12" y="42" class="n-sub" font-size="8.5">uuid: a1b2c3d4</text>
+                    <text x="12" y="54" class="n-sub" font-size="8.5">submodules:</text>
+                    <text x="12" y="66" class="n-sub" font-size="8.5">  memory: e5f6g7h8</text>
+                    <text x="12" y="78" class="n-sub" font-size="8.5">  harness: i9j0k1l2</text>
+                    <circle cx="165" cy="40" r="4.5" class="n-port"/>
+                    <circle cx="165" cy="65" r="4.5" class="n-port"/>
+                </g>
+
+                <g transform="translate(285, 150)">
+                    <rect width="145" height="72" rx="8" ry="8" class="n-box"/>
+                    <rect width="145" height="22" rx="8" ry="8" class="n-hdr-memory"/>
+                    <text x="72" y="15" text-anchor="middle" class="n-lbl" font-size="10">MEMORY.md</text>
+                    <text x="10" y="38" class="n-sub" font-size="8.5">经验与决策记录</text>
+                    <text x="10" y="50" class="n-sub" font-size="8.5">link → parent SPEC</text>
+                    <text x="10" y="62" class="n-sub" font-size="8.5">uuid: e5f6g7h8</text>
+                    <circle cx="0" cy="42" r="4.5" class="n-port" style="fill:var(--status-clean)"/>
+                </g>
+
+                <g transform="translate(250, 235)">
+                    <rect width="145" height="60" rx="8" ry="8" class="n-box"/>
+                    <rect width="145" height="22" rx="8" ry="8" class="n-hdr-harness"/>
+                    <text x="72" y="15" text-anchor="middle" class="n-lbl" font-size="10">HARNESS.md</text>
+                    <text x="10" y="38" class="n-sub" font-size="8.5">测试与验证方案</text>
+                    <text x="10" y="50" class="n-sub" font-size="8.5">link → parent SPEC</text>
+                    <circle cx="0" cy="36" r="4.5" class="n-port" style="fill:#6a4aaa"/>
+                </g>
+
+                <g transform="translate(345, 40)">
+                    <rect width="155" height="82" rx="8" ry="8" class="n-box"/>
+                    <rect width="155" height="22" rx="8" ry="8" class="n-hdr-config"/>
+                    <text x="78" y="15" text-anchor="middle" class="n-lbl" font-size="9">.archui/index.yaml</text>
+                    <text x="10" y="38" class="n-sub" font-size="8.5">uuid: a1b2c3d4</text>
+                    <text x="10" y="50" class="n-sub" font-size="8.5">submodules:</text>
+                    <text x="10" y="62" class="n-sub" font-size="8.5">  memory → e5f6g7h8</text>
+                    <text x="10" y="74" class="n-sub" font-size="8.5">  harness → i9j0k1l2</text>
+                    <circle cx="0" cy="50" r="4.5" class="n-port" style="fill:var(--honey-strong)"/>
+                </g>
+
+                <g transform="translate(245, 130)">
+                    <rect width="56" height="16" rx="8" fill="rgba(194,97,0,0.08)" stroke="var(--honey)" stroke-width="0.6"/>
+                    <text x="28" y="11" text-anchor="middle" fill="var(--honey)" font-family="JetBrains Mono" font-size="7" font-weight="600">UUID Link</text>
+                </g>
+            </svg>
+        </section>
+
+        <section class="front-intro">
+            <div class="intro-pain">
+                项目知识层越来越复杂，难以维护。<br>
+                知识散落在代码和文档中，越积越乱，AI 也读不动。
+            </div>
+            <div class="intro-solve">
+                ArchUI 将知识结构化为<strong>可复用模块</strong> —<br>
+                每个模块独立可维护，AI 按需加载，<strong>直接生成代码</strong>。
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ===== BACK SIDE ===== -->
+    <div class="page-label">BACK — 反面</div>
+    <div class="card">
+
+        <div class="back-section-title"><span>核心亮点</span></div>
+
+        <section class="back-highlights">
+            <div class="h-card">
+                <div class="h-num">1</div>
+                <div class="h-body">
+                    <div class="h-title">一键 Skills 化</div>
+                    <div class="h-desc">将知识文档变成可复用、相关联的 Skills 模块。<br>一键导入现有项目，自动生成模块树。</div>
+                    <div class="h-example">archui init → 扫描文档 → 生成 Skills 模块树</div>
+                </div>
+            </div>
+            <div class="h-card">
+                <div class="h-num">2</div>
+                <div class="h-body">
+                    <div class="h-title">文档即编排</div>
+                    <div class="h-desc">编排知识模块就是编排代码。<br>改 Skills 即改代码，AI 自动同步更新。</div>
+                    <div class="h-example">edit SPEC.md → AI auto-generates code</div>
+                </div>
+            </div>
+            <div class="h-card">
+                <div class="h-num">3</div>
+                <div class="h-body">
+                    <div class="h-title">模块广场</div>
+                    <div class="h-desc">发布、发现、替换、组合 — Skills 模块的 npm。<br>社区共享知识模块，构建复用生态。</div>
+                    <div class="h-example">publish → discover → replace → generate</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="back-contact">
+            <div class="qr-section">
+                <img src="qrcode.png" alt="QR Code">
+                <div class="qr-text">扫码查看演示</div>
+            </div>
+            <div class="contact-sep"></div>
+            <div class="github-section">
+                <div class="gh-label">GitHub</div>
+                <div class="gh-repo">SijiaRong/ArchUIRed</div>
+                <div class="gh-team">Team: Arch Park</div>
+            </div>
+        </section>
+
+        <section class="back-bottom">
+            <div class="bottom-bar"></div>
+            <div class="bottom-line">
+                让工作知识可维护、可复用、可生成，可持续产生价值。
+            </div>
+            <div class="bottom-brand">ARCH PARK · ARCHUI</div>
+        </section>
+
+    </div>
+
+</body>
+</html>
