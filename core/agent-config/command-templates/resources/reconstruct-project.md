@@ -37,7 +37,7 @@ This workflow redesigns the project's module structure from first principles rat
 
 These rules are absolute. Violating any of them corrupts the module graph or breaks reversibility.
 
-- **Never** modify anything inside `.archui-backup/` — it is the read-only reference copy
+- **Never** modify, create, or delete `.archui-backup/` or anything inside it — it is the read-only reference copy and must remain intact throughout the entire process
 - **Never** copy files back into `.archui-temp/` — only move files out of it
 - The set of files across all modules' `resources/` directories must exactly equal the original `.archui-backup/` contents (reversibility contract)
 - **Never** change an existing UUID in any `.archui/index.yaml`
