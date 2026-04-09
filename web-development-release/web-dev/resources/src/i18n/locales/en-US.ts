@@ -33,6 +33,17 @@ export const enUS: LandingTranslations = {
         desc: 'Publish, discover, swap, compose — npm for Skills modules',
       },
     ],
+    cli: {
+      kicker: 'CLI Tool',
+      title: 'One command to turn your workspace into a generative AI knowledge engine',
+      body: 'The ArchUI CLI deeply analyzes your project structure and docs, using SOTA-level semantic understanding to automatically decompose, interlink, and generate a module graph — zero manual curation, instant knowledge engineering.',
+      heroCommand: 'archui init --reconstruct',
+      install: {
+        label: 'Install CLI',
+        command: 'npm install -g @jerryrsj001/archui',
+      },
+      copied: 'Copied',
+    },
     brand: {
       tagline: 'Make knowledge sustainably valuable.',
     },

@@ -162,7 +162,7 @@
 }
 
 .card {
-  width: min(720px, 100%);
+  width: min(780px, 100%);
   padding: 30px;
   border-radius: var(--radius-2xl);
   border: 1px solid var(--line-default);
@@ -243,6 +243,144 @@
   margin-top: 8px;
 }
 
+/* ── CLI Section ── */
+
+.cliSection {
+  width: min(780px, 100%);
+  padding: 30px;
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--line-default);
+  background: color-mix(in srgb, var(--surface-panel) 90%, transparent);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(18px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cliHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cliTitle {
+  font-family: var(--font-heading-sans);
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.cliBody {
+  max-width: 620px;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.cliCommandRow {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+.cliHeroCommand {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 22px;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  border: 1px solid var(--line-subtle);
+  border-right: none;
+  background: color-mix(in srgb, var(--surface-overlay) 60%, transparent);
+}
+
+.cliPrompt {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--brand-honey);
+  line-height: 1;
+}
+
+.cliCommand {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  word-break: break-all;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+.copyBtn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  border: 1px solid var(--line-subtle);
+  border-left: none;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  background: color-mix(in srgb, var(--surface-overlay) 60%, transparent);
+  color: var(--text-tertiary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color .14s ease, background .14s ease;
+}
+
+.copyBtn:hover {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--surface-overlay) 80%, transparent);
+}
+
+.copyBtnCopied {
+  color: var(--brand-honey);
+  font-size: 0.72rem;
+  font-family: var(--font-heading-sans);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.cliInstallRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--line-subtle);
+  padding-top: 18px;
+}
+
+.cliInstallLabel {
+  font-family: var(--font-heading-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.cliInstallCommand {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  border: 1px solid var(--line-subtle);
+  border-right: none;
+  background: color-mix(in srgb, var(--surface-overlay) 40%, transparent);
+}
+
+.cliInstallCommand .cliCommand {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
 .teamName {
   font-family: var(--font-heading-sans);
   font-size: 0.82rem;
@@ -269,5 +407,14 @@
 
   .highlights {
     grid-template-columns: 1fr;
+  }
+
+  .cliSection {
+    padding: 22px 18px;
+  }
+
+  .cliHeroCommand,
+  .cliInstallCommand {
+    padding: 14px 14px;
   }
 }

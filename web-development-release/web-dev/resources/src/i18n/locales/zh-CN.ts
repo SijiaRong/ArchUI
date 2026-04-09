@@ -33,6 +33,17 @@ export const zhCN: LandingTranslations = {
         desc: '发布、发现、替换、组合 — Skills 模块的 npm',
       },
     ],
+    cli: {
+      kicker: '命令行工具',
+      title: '一行命令，将工作空间转化为生成式 AI 知识引擎',
+      body: 'ArchUI CLI 深度解析现有项目结构与文档，以 SOTA 级语义理解自动拆分、关联、生成模块图谱 — 无需手动整理，一键完成知识工程化。',
+      heroCommand: 'archui init --reconstruct',
+      install: {
+        label: '安装 CLI',
+        command: 'npm install -g @jerryrsj001/archui',
+      },
+      copied: '已复制',
+    },
     brand: {
       tagline: '让知识持续产生价值。',
     },

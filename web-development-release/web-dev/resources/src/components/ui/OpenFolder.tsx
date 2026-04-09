@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { openDirectory } from '../../filesystem/fsa'
 import serverAdapter from '../../filesystem/serverAdapter'
 import { brandAssetUrls } from '../../generated/brand-assets.generated'
@@ -18,6 +19,14 @@ export function OpenFolder({ theme, onToggleTheme }: OpenFolderProps) {
   const setAdapter = useCanvasStore(s => s.setAdapter)
   const { locale, toggleLocale, t } = useI18n()
   const lt = t.landing
+  const [copiedKey, setCopiedKey] = useState<string | null>(null)
+
+  function handleCopy(text: string, key: string) {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedKey(key)
+      setTimeout(() => setCopiedKey(null), 1500)
+    })
+  }
 
   async function handleFsa() {
     try {
@@ -58,16 +67,6 @@ export function OpenFolder({ theme, onToggleTheme }: OpenFolderProps) {
         <div className={s.tagline}>{lt.tagline}</div>
       </div>
 
-      <div className={s.highlights}>
-        {lt.highlights.map((h, i) => (
-          <div key={i} className={s.highlightCard}>
-            <span className={s.highlightIcon}>{h.icon}</span>
-            <strong className={s.highlightTitle}>{h.title}</strong>
-            <span className={s.highlightDesc}>{h.desc}</span>
-          </div>
-        ))}
-      </div>
-
       <div className={s.card}>
         <div className={s.cardKicker}>{lt.card.kicker}</div>
         <h1>{lt.card.title}</h1>
@@ -81,6 +80,53 @@ export function OpenFolder({ theme, onToggleTheme }: OpenFolderProps) {
             {lt.actions.openFolder}
           </button>
         </div>
+      </div>
+
+      <div className={s.cliSection}>
+        <div className={s.cliHeader}>
+          <div className={s.cardKicker}>{lt.cli.kicker}</div>
+          <h2 className={s.cliTitle}>{lt.cli.title}</h2>
+          <p className={s.cliBody}>{lt.cli.body}</p>
+        </div>
+
+        <div className={s.cliCommandRow}>
+          <div className={s.cliHeroCommand}>
+            <span className={s.cliPrompt}>$</span>
+            <code className={s.cliCommand}>{lt.cli.heroCommand}</code>
+          </div>
+          <button
+            className={`${s.copyBtn} ${copiedKey === 'hero' ? s.copyBtnCopied : ''}`}
+            onClick={() => handleCopy(lt.cli.heroCommand, 'hero')}
+          >
+            {copiedKey === 'hero' ? lt.cli.copied : '⎘'}
+          </button>
+        </div>
+
+        <div className={s.cliInstallRow}>
+          <span className={s.cliInstallLabel}>{lt.cli.install.label}</span>
+          <div className={s.cliCommandRow}>
+            <div className={s.cliInstallCommand}>
+              <span className={s.cliPrompt}>$</span>
+              <code className={s.cliCommand}>{lt.cli.install.command}</code>
+            </div>
+            <button
+              className={`${s.copyBtn} ${copiedKey === 'install' ? s.copyBtnCopied : ''}`}
+              onClick={() => handleCopy(lt.cli.install.command, 'install')}
+            >
+              {copiedKey === 'install' ? lt.cli.copied : '⎘'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className={s.highlights}>
+        {lt.highlights.map((h, i) => (
+          <div key={i} className={s.highlightCard}>
+            <span className={s.highlightIcon}>{h.icon}</span>
+            <strong className={s.highlightTitle}>{h.title}</strong>
+            <span className={s.highlightDesc}>{h.desc}</span>
+          </div>
+        ))}
       </div>
 
       <footer className={s.footer}>
