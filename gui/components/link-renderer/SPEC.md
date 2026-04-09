@@ -44,3 +44,9 @@ Such links become visible as cross-card edges when the user drills into the appr
 ## Edge Styling
 
 Each edge is styled by its `relation` value — stroke weight, dash pattern, and color vary by relation type. The `relation` field appears as a label at the midpoint of the edge. The `description` field appears as a hover tooltip. Full styling reference is in `resources/edge-reference.md`.
+
+## Design System
+
+All visual properties — color, typography, spacing, and elevation — must use semantic tokens from the Design System (`gui/design-system/`). Do not use raw hex, pixel, or opacity values in implementations. Consult `gui/design-system/foundations/color/resources/token-table.md`, `gui/design-system/foundations/typography/resources/token-table.md`, `gui/design-system/foundations/spacing/resources/token-table.md`, and `gui/design-system/foundations/elevation/resources/token-table.md` for the complete token vocabulary.
+
+The committed web semantics export for relation defaults is `web-semantics.yaml`; React code must use the generated artifact rather than inventing fallback relation labels inline.
