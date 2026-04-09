@@ -54,7 +54,16 @@ const page = await browser.newPage({ viewport: { width: 800, height: 2000 } });
 
 await page.goto(`http://localhost:${port}/`, { waitUntil: 'networkidle' });
 await page.evaluate(() => document.fonts.ready);
-await page.waitForTimeout(2000);
+await page.waitForTimeout(5000);
+// Force font check
+const fontsLoaded = await page.evaluate(() => {
+  return document.fonts.check('800 40px Syne');
+});
+console.log('  Syne loaded:', fontsLoaded);
+if (!fontsLoaded) {
+  console.log('  Waiting extra for fonts...');
+  await page.waitForTimeout(5000);
+}
 
 // Hide browser background, capture only the banner
 await page.evaluate(() => {
