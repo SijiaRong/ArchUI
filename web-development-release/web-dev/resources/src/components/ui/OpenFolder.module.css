@@ -14,10 +14,17 @@
   gap: 30px;
 }
 
-.themeBtn {
+.topActions {
   position: absolute;
   top: 24px;
   right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.langBtn,
+.themeBtn {
   border: 1px solid var(--line-default);
   background: color-mix(in srgb, var(--surface-overlay) 88%, transparent);
   color: var(--text-secondary);
@@ -27,6 +34,16 @@
   transition: transform .14s ease, color .14s ease, border-color .14s ease;
 }
 
+.langBtn {
+  font-family: var(--font-heading-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  min-width: 42px;
+  text-align: center;
+}
+
+.langBtn:hover,
 .themeBtn:hover {
   transform: translateY(-1px);
   color: var(--text-primary);
@@ -34,8 +51,8 @@
 }
 
 .logoMark {
-  width: 72px;
-  height: 72px;
+  width: 56px;
+  height: 56px;
   filter: drop-shadow(0 8px 20px color-mix(in srgb, var(--brand-honey) 28%, transparent));
 }
 
@@ -44,6 +61,26 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
+}
+
+.logoRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+}
+
+.logoRow .logoMark {
+  margin-left: -70px;
+}
+
+.wordmark {
+  font-family: var(--font-wordmark);
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: var(--text-primary);
 }
 
 .logoFull {
@@ -197,34 +234,6 @@
   transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--brand-lake) 26%, var(--line-default));
   background: color-mix(in srgb, var(--brand-lake) 7%, var(--surface-raised));
-}
-
-.inlineBtn {
-  margin-top: 16px;
-  border: none;
-  background: none;
-  color: var(--text-tertiary);
-  cursor: pointer;
-  font-size: 0.82rem;
-}
-
-.urlRow {
-  margin-top: 12px;
-}
-
-.urlInput {
-  width: 100%;
-  padding: 12px 14px;
-  background: color-mix(in srgb, var(--surface-elevated) 92%, transparent);
-  border: 1px solid var(--line-default);
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  outline: none;
-}
-
-.urlInput:focus {
-  border-color: var(--focus-ring);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 12%, transparent);
 }
 
 .footer {

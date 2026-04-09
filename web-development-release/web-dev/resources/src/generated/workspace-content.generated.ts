@@ -87,8 +87,8 @@ export const workspaceContent = {
       "body": "将知识结构化为可复用模块 — 每个模块独立可维护，AI 按需加载，直接生成代码。打开项目，进入模块关系图。"
     },
     "actions": {
-      "connectServer": "连接本地服务器",
-      "openFolder": "在 Chrome/Edge 打开文件夹",
+      "connectServer": "云预览",
+      "openFolder": "打开本地 ArchUI 项目",
       "showServerUrl": "显示服务器地址",
       "hideServerUrl": "隐藏服务器地址",
       "serverUrlPlaceholder": "http://localhost:3001"

@@ -4,9 +4,11 @@ import s from './StatusBar.module.css'
 interface StatusBarProps {
   selectedCount: number
   moduleCount: number
+  theme: 'light' | 'dark'
+  onToggleTheme: () => void
 }
 
-export function StatusBar({ selectedCount, moduleCount }: StatusBarProps) {
+export function StatusBar({ selectedCount, moduleCount, theme, onToggleTheme }: StatusBarProps) {
   const brand = workspaceContent.brand
   const isSelected = selectedCount > 0
   const label = isSelected ? `${selectedCount} 已选中` : 'IDLE'
@@ -26,6 +28,9 @@ export function StatusBar({ selectedCount, moduleCount }: StatusBarProps) {
       <span className={s.hint}>
         点击选中 · 双击钻入 · Esc 返回 · ⌘K 命令面板
       </span>
+      <button className={s.themeBtn} onClick={onToggleTheme}>
+        {theme === 'dark' ? '☀️' : '🌙'}
+      </button>
       <span className={s.teamTag}>{brand.teamName}</span>
     </footer>
   )

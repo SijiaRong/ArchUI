@@ -75,8 +75,23 @@
   color: var(--text-tertiary);
 }
 
-.teamTag {
+.themeBtn {
   margin-left: auto;
+  background: none;
+  border: 1px solid var(--line-default);
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 0.72rem;
+  line-height: 1;
+  transition: border-color 0.15s;
+}
+
+.themeBtn:hover {
+  border-color: var(--brand-honey);
+}
+
+.teamTag {
   font-family: var(--font-heading-sans);
   font-size: 0.68rem;
   font-weight: 700;

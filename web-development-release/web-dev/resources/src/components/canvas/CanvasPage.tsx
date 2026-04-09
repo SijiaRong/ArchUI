@@ -39,7 +39,10 @@ const EDGE_TYPES = { linkEdge: LinkEdge }
 
 const ACCENT_COUNT = 6
 
-interface CanvasPageProps {}
+interface CanvasPageProps {
+  theme: 'light' | 'dark'
+  onToggleTheme: () => void
+}
 
 function placeholderEntry(uuid: string): ProjectIndexEntry {
   return {
@@ -190,7 +193,7 @@ export function CanvasPage(props: CanvasPageProps) {
   )
 }
 
-function CanvasPageInner({}: CanvasPageProps) {
+function CanvasPageInner({ theme, onToggleTheme }: CanvasPageProps) {
   const currentModule = useCanvasStore(s => s.currentModule)
   const projectIndex = useCanvasStore(s => s.projectIndex)
   const adapter = useCanvasStore(s => s.adapter)
@@ -509,6 +512,7 @@ function CanvasPageInner({}: CanvasPageProps) {
           <button className={s.toolBtn} onClick={() => setShowNewModule(true)}>{canvasContent.toolbar.newChild}</button>
           <button className={s.toolBtn} onClick={() => reload()}>{canvasContent.toolbar.reload}</button>
           <button className={s.toolBtn} onClick={() => setShowPalette(true)}>{canvasContent.toolbar.commandMenu}</button>
+          <button className={s.toolBtn} onClick={onToggleTheme}>{theme === 'dark' ? '☀️' : '🌙'}</button>
         </div>
 
         <ReactFlow
@@ -612,6 +616,8 @@ function CanvasPageInner({}: CanvasPageProps) {
       <StatusBar
         selectedCount={selectedUuid ? 1 : 0}
         moduleCount={currentModule?.children.length ?? 0}
+        theme={theme}
+        onToggleTheme={onToggleTheme}
       />
     </div>
   )

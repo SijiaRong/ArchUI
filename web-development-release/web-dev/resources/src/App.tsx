@@ -1,30 +1,44 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useCanvasStore, detectServerRoot } from './store/canvas'
 import serverAdapter from './filesystem/serverAdapter'
 import { OpenFolder } from './components/ui/OpenFolder'
 import { CanvasPage } from './components/canvas/CanvasPage'
 import { installTestHook } from './testHook'
 import { createE2eAdapter, E2E_ROOT } from './e2e-fixture'
+import { I18nProvider } from './i18n'
 
 if (import.meta.env.DEV || import.meta.env.MODE === 'test') {
   installTestHook()
 }
+
+type ThemeMode = 'light' | 'dark'
 
 function getSearchParams(): URLSearchParams {
   if (typeof window === 'undefined') return new URLSearchParams()
   return new URLSearchParams(window.location.search)
 }
 
+function getInitialTheme(): ThemeMode {
+  const params = getSearchParams()
+  const forced = params.get('theme')
+  if (forced === 'light' || forced === 'dark') return forced
+  const stored = window.localStorage.getItem('archui-theme')
+  if (stored === 'light' || stored === 'dark') return stored
+  return 'dark'
+}
+
 export default function App() {
   const rootPath = useCanvasStore(s => s.rootPath)
   const setAdapter = useCanvasStore(s => s.setAdapter)
   const fsMode = useCanvasStore(s => s.fsMode)
+  const [theme, setTheme] = useState<ThemeMode>(getInitialTheme)
 
   useEffect(() => {
     if (typeof document !== 'undefined') {
-      document.documentElement.dataset.theme = 'dark'
+      document.documentElement.dataset.theme = theme
+      window.localStorage.setItem('archui-theme', theme)
     }
-  }, [])
+  }, [theme])
 
   useEffect(() => {
     if (rootPath !== null) return
@@ -52,9 +66,15 @@ export default function App() {
     }
   }, [fsMode, rootPath, setAdapter])
 
+  const toggleTheme = () => setTheme(v => v === 'light' ? 'dark' : 'light')
+
   if (rootPath === null) {
-    return <OpenFolder />
+    return (
+      <I18nProvider>
+        <OpenFolder theme={theme} onToggleTheme={toggleTheme} />
+      </I18nProvider>
+    )
   }
 
-  return <CanvasPage />
+  return <CanvasPage theme={theme} onToggleTheme={toggleTheme} />
 }
